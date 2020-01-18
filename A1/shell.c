@@ -10,9 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "interpreter.h"
-//#include "shellmemory.h"
+#include "shell.h"
 
-int  parseInput(char* commandInput);
 void printString(char** input, int size);
 
 int main (int argc, char** argv)
@@ -29,9 +28,10 @@ int main (int argc, char** argv)
 			//TODO: CARRIAGE RETURN!!! \r\n, how to deal with it? does it terminate with \r\n or \0??
 			fgets (commandInput, 999, stdin);
 
-//			char commandInput[] = "help";
+			char* parsedInput[100];
+			parseInput(commandInput, parsedInput);
 
-			int errorCode = parseInput(commandInput);
+			int errorCode = interpreter (parsedInput);
 			if (errorCode == -1) {
 				exit(EXIT_FAILURE);
 			}
@@ -44,9 +44,7 @@ int main (int argc, char** argv)
 	return 0;
 }
 
-int parseInput(char* commandInput) {
-
-	char* parsedInput[100];
+void parseInput(char* commandInput,  char** parsedInput) {
 
 	while (*commandInput == ' ') {
 		commandInput ++;
@@ -55,11 +53,6 @@ int parseInput(char* commandInput) {
 	int parsedInputIndex = 0;
 	while (*commandInput != '\0' && parsedInputIndex < 100) {
 		char word[100];
-
-		int a = 0;
-		for (; a< 99; a ++) {
-			word[a] = '\0';
-		}
 
 		int wordIndex = 0;
 		for (; wordIndex < 100 && *commandInput != ' ' && *commandInput != '\0' && *commandInput != '\n'; wordIndex++, commandInput ++) {
@@ -73,8 +66,6 @@ int parseInput(char* commandInput) {
 		commandInput ++;
 	}
 
-
-	return interpreter (parsedInput);
 }
 
 void printString(char** input, int size) {

@@ -21,13 +21,9 @@ void print(char*);
 int interpreter(char* parsedWords[]) {
 	int errCode = 0;
 
-//	printf ("%s", parsedWords[1]);
-//	printf("compare result: %d", strcmp(parsedWords[0], "help\n") );
-
 	if (strcmp(parsedWords[0], "help") == 0) { help(); }
 	else if (strcmp(parsedWords[0], "quit") == 0) { quit(); }
 	else if (strcmp(parsedWords[0], "set") == 0) {
-		printf("enter the set block\n");
 		if ((sizeof (*parsedWords) / sizeof (**parsedWords)) < 3) {
 			printf("missing set parameter\n");
 			return -1;
@@ -58,6 +54,8 @@ void help() {
 
 void quit() {
 	exit(EXIT_SUCCESS);
+
+	//TODO: should handle the script exit!!!
 }
 
 void set(char* varName, char* value) {
@@ -75,12 +73,19 @@ void print(char* name) {
 	printf("%s\n", value);
 }
 
-void run(char* scriptName) {
-//	FILE* script = fopen(scriptName, "r");
-//	while (script != EOF) {
-//
-//	}
-//	fclose(script);
+int run(char* scriptName) {
+	FILE* scriptP = fopen(scriptName, "r");
+	if (scriptP == NULL) {
+		printf("Script not found\n");
+	}
+
+	char*** commands;
+	while (!feof(scriptP)) {
+		char line[1000];
+		fgets(line, 999, scriptP);
+
+	}
+	fclose(scriptP);
 
 }
 
