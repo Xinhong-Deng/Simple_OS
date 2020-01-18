@@ -21,20 +21,22 @@ void print(char*);
 int interpreter(char* parsedWords[]) {
 	int errCode = 0;
 
-//	printf ("%s \n", parsedWords[0]);
+//	printf ("%s", parsedWords[1]);
+//	printf("compare result: %d", strcmp(parsedWords[0], "help\n") );
 
-	if (strcmp(parsedWords[0], "help\0") == 0) { help(); }
-	else if (strcmp(parsedWords[0], "quit\0") == 0) { quit(); }
-	else if (strcmp(parsedWords[0], "set\0") == 0) {
+	if (strcmp(parsedWords[0], "help") == 0) { help(); }
+	else if (strcmp(parsedWords[0], "quit") == 0) { quit(); }
+	else if (strcmp(parsedWords[0], "set") == 0) {
+		printf("enter the set block\n");
 		if ((sizeof (*parsedWords) / sizeof (**parsedWords)) < 3) {
-			printf("missing set parameter\r");
+			printf("missing set parameter\n");
 			return -1;
 		}
 
 		set(parsedWords[1], parsedWords[2]);
 	}
-	else if (strcmp(parsedWords[0], "print\0") == 0) { print(parsedWords[1]); }
-	else if (strcmp(parsedWords[0], "run\0") == 0) {
+	else if (strcmp(parsedWords[0], "print") == 0) { print(parsedWords[1]); }
+	else if (strcmp(parsedWords[0], "run") == 0) {
 		//TODO
 		;
 	}

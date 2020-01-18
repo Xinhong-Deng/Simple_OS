@@ -9,38 +9,47 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 #include "shellmemory.h"
 
-ShellMem* getElement(char*);
+ShellMem* getElement(char*, bool);
 
 ShellMem* shellMem[100];
 
-void setMem (char* key, char* value) {
-	ShellMem* target = getElement(key);
-
+void setMem(char* key, char* value) {
+	ShellMem* target = getElement(key, true);
 
 	if (target == NULL) {
 		//move it out??
-		printf ("no space in the shell memory\n");
+		printf("no space in the shell memory\n");
 		return;
 	}
 
-	strcpy(target->value, value);
+	target->value = strdup(value);
 }
 
-char* getValue (char* key) {
-	ShellMem* target = getElement(key);
+char* getValue(char* key) {
+	ShellMem* target = getElement(key, false);
+
+	if (target == NULL) {
+		return NULL;
+	}
 
 	return target->value;
 }
 
-ShellMem* getElement(char* key) {
-	ShellMem* target;
+ShellMem* getElement(char* key, bool isCreateNewElement) {
+	ShellMem* target = NULL;
+
 	int i = 0;
 	while (i < 100) {
-		if (shellMem[i]->key == NULL) {
-			target = shellMem[i];
-			strcpy (target->key, key);
+		if (shellMem[i] == NULL) {
+			printf("initialize %d element\n", i);
+			if (isCreateNewElement) {
+				shellMem[i] = (ShellMem*) malloc(sizeof (ShellMem));
+				target = shellMem[i];
+				target->key = strdup(key);
+			}
 			break;
 		}
 

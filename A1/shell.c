@@ -55,8 +55,14 @@ int parseInput(char* commandInput) {
 	int parsedInputIndex = 0;
 	while (*commandInput != '\0' && parsedInputIndex < 100) {
 		char word[100];
+
+		int a = 0;
+		for (; a< 99; a ++) {
+			word[a] = '\0';
+		}
+
 		int wordIndex = 0;
-		for (; wordIndex < 100 && *commandInput != ' ' && *commandInput != '\0'; wordIndex++, commandInput ++) {
+		for (; wordIndex < 100 && *commandInput != ' ' && *commandInput != '\0' && *commandInput != '\n'; wordIndex++, commandInput ++) {
 			word[wordIndex] = *commandInput;
 		}
 
@@ -64,12 +70,9 @@ int parseInput(char* commandInput) {
 		parsedInput[parsedInputIndex] = strdup(word);
 
 		parsedInputIndex ++;
-
-		if (*commandInput == '\0') {
-			break;
-		}
 		commandInput ++;
 	}
+
 
 	return interpreter (parsedInput);
 }
