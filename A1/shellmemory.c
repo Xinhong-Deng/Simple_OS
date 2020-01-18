@@ -44,7 +44,6 @@ ShellMem* getElement(char* key, bool isCreateNewElement) {
 	int i = 0;
 	while (i < 100) {
 		if (shellMem[i] == NULL) {
-			printf("initialize %d element\n", i);
 			if (isCreateNewElement) {
 				shellMem[i] = (ShellMem*) malloc(sizeof (ShellMem));
 				target = shellMem[i];
