@@ -29,7 +29,7 @@ int main (int argc, char** argv)
 			fgets (commandInput, 999, stdin);
 
 			char* parsedInput[100];
-			parseInput(commandInput, parsedInput);
+			parseInput(&commandInput, parsedInput);
 
 			int errorCode = interpreter (parsedInput);
 			if (errorCode == -1) {
@@ -44,28 +44,32 @@ int main (int argc, char** argv)
 	return 0;
 }
 
-void parseInput(char* commandInput,  char** parsedInput) {
+void parseInput(char** commandInput,  char** parsedInput) {
 
-	while (*commandInput == ' ') {
-		commandInput ++;
+	while (**commandInput == ' ') {
+		(*commandInput)++;
 	}
 
 	int parsedInputIndex = 0;
-	while (*commandInput != '\0' && parsedInputIndex < 100) {
-		char word[100];
+
+	char word[100];
+	while (**commandInput != '\0' && **commandInput != '\n' && parsedInputIndex < 100) {
 
 		int wordIndex = 0;
-		for (; wordIndex < 100 && *commandInput != ' ' && *commandInput != '\0' && *commandInput != '\n'; wordIndex++, commandInput ++) {
-			word[wordIndex] = *commandInput;
+		for (; wordIndex < 100 && **commandInput != ' ' && **commandInput != '\0' && **commandInput != '\n'; wordIndex++, (*commandInput)++) {
+			word[wordIndex] = **commandInput;
 		}
 
 		word[wordIndex] = '\0';
 		parsedInput[parsedInputIndex] = strdup(word);
 
 		parsedInputIndex ++;
-		commandInput ++;
+		(*commandInput) ++;
 	}
 
+	for (int i = 0; i < parsedInputIndex; i ++) {
+		printf("%d\n", parsedInput[i][0]);
+	}
 }
 
 void printString(char** input, int size) {

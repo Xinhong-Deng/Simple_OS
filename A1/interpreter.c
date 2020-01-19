@@ -17,6 +17,7 @@ void help();
 void quit();
 void set(char*, char*);
 void print(char*);
+int run(char*);
 
 int interpreter(char* parsedWords[]) {
 	int errCode = 0;
@@ -32,13 +33,10 @@ int interpreter(char* parsedWords[]) {
 		set(parsedWords[1], parsedWords[2]);
 	}
 	else if (strcmp(parsedWords[0], "print") == 0) { print(parsedWords[1]); }
-	else if (strcmp(parsedWords[0], "run") == 0) {
-		//TODO
-		;
-	}
+	else if (strcmp(parsedWords[0], "run") == 0) { run(parsedWords[1]); }
 	else { printf("Unknown command\n"); }
 
-
+	//TODO: error code is not used!!
 	return 0;
 }
 
@@ -74,19 +72,59 @@ void print(char* name) {
 }
 
 int run(char* scriptName) {
+	printf("%s\n", scriptName);
 	FILE* scriptP = fopen(scriptName, "r");
 	if (scriptP == NULL) {
 		printf("Script not found\n");
+		return -1;
 	}
 
-	char*** commands;
+	char** commands[100];		//accept script with 100 lines of command
+	int commandsIndex = 0;
 	while (!feof(scriptP)) {
-		char line[1000];
+
+		if (commandsIndex > 100) {
+			//TODO: exception handle??
+			break;
+		}
+
+		char* line = (char*) malloc(sizeof (char) * 1000);
 		fgets(line, 999, scriptP);
+
+		while (*line != '\0' && commandsIndex < 100) {
+			//no need to read the next file input
+			char* command[100];
+
+			//terminate for each command
+			parseInput(&line, command);
+
+			commands[commandsIndex] = command;
+			commandsIndex ++;
+			//line ++;
+		}
 
 	}
 	fclose(scriptP);
 
+	//parsed all commands in the file
+//	int i = 0;
+//	while (i < commandsIndex) {
+//		int errCode = interpreter(commands[i]);
+//		if (errCode == -1) {
+//			return -1;
+//		}
+//
+//		i ++;
+//	}
+
+//	int i =0;
+//	while ( i < commandsIndex) {
+//		printf ("%d th: %s\n", i, commands[i][0]);
+//		i ++;
+//	}
+
+
+	return 0;
 }
 
 
