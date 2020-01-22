@@ -34,6 +34,7 @@ int interpreter(char* parsedWords[]) {
 	}
 	else if (strcmp(parsedWords[0], "print") == 0) { print(parsedWords[1]); }
 	else if (strcmp(parsedWords[0], "run") == 0) { run(parsedWords[1]); }
+	else if (strcmp(parsedWords[0], "") == 0) {}
 	else { printf("Unknown command\n"); }
 
 	//TODO: error code is not used!!
