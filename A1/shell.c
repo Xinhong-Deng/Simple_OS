@@ -15,6 +15,7 @@
 
 void printString(char** input, int size);
 void skipSpaces(char**);
+void printWordArrays(char** input, int inputSize);
 
 int main (void)
 {
@@ -34,6 +35,14 @@ int main (void)
         int errorCode = interpreter(parsedInput, false);
         if (errorCode == -1) {
             exit(EXIT_FAILURE);
+        } else if (errorCode == PRINT_ERROR) {
+            printf("Variable does not exist\n");
+        } else if (errorCode == SCRIPT_NOT_FOUND) {
+            printf("Script not found\n");
+        } else if (errorCode == SYNTAX_ERROR) {
+            printf("Unknown command\n");
+        } else if (errorCode == QUIT_FROM_SCRIPT) {
+            //do nothing, wait for user input
         }
 
 	}
@@ -63,17 +72,7 @@ void parseInput(char** commandInput,  char** parsedInput) {
 	}
 
 
-//	for (int i = 0; i < parsedInputIndex; i ++) {
-//        printf("word %d: %s\n", i, parsedInput[i]);
-//		printf("%d\n", parsedInput[i][0]);
-//	}
-}
 
-void printString(char** input, int size) {
-	int i = 0;
-	for (; i < size; i++) {
-		printf ("line %d: %s \n", i, input[i]);
-	}
 }
 
 void skipSpaces(char** commandInput) {
@@ -82,4 +81,20 @@ void skipSpaces(char** commandInput) {
     }
 
     return;
+}
+
+
+// debug use only!!!
+void printString(char** input, int size) {
+    int i = 0;
+    for (; i < size; i++) {
+        printf ("line %d: %s \n", i, input[i]);
+    }
+}
+
+void printWordArrays(char** input, int inputSize) {
+    for (int i = 0; i < inputSize; i ++) {
+        printf("word %d: %s\n", i, input[i]);
+		printf("%d\n", input[i][0]);
+	}
 }

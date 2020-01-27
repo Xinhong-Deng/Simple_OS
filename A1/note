@@ -1,12 +1,10 @@
 current todo
-TODO: file recurssion stack overflow
-
 todo: not free the memory (still a problem)
 
-todo: redesign the error code
+todo: not handle the memory full case
 
-todo: the script should stop when there is an error, (not checked)
+todo: different behaviours for "run testfile" and "< testfile" on errCode
 
-todo: the script's quit is not handled properly... (it quits the program not only the script, WIP)
+todo: terminate the script for all errCode or just syntax error?? (now it is for all errCode)
 
 todo: still not clear about the file end and \r\n
