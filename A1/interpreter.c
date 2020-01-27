@@ -9,26 +9,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "interpreter.h"
 #include "shell.h"
 #include "shellmemory.h"
 
 void help();
-void quit();
+void quit(bool);
 void set(char*, char*);
 void print(char*);
 int run(char*);
 
-int interpreter(char* parsedWords[]) {
+int interpreter(char** parsedWords, bool isFromScript) {
 	int errCode = 0;
 
 	if (strcmp(parsedWords[0], "help") == 0) { help(); }
-	else if (strcmp(parsedWords[0], "quit") == 0) { quit(); }
+	else if (strcmp(parsedWords[0], "quit") == 0) { quit(isFromScript); }
 	else if (strcmp(parsedWords[0], "set") == 0) {
-		if ((sizeof (*parsedWords) / sizeof (**parsedWords)) < 3) {
-			printf("missing set parameter\n");
-			return -1;
-		}
+//		if ((sizeof (*parsedWords) / sizeof (**parsedWords)) < 3) {
+//			printf("missing set parameter\n");
+//			return -1;
+//		}
 
 		set(parsedWords[1], parsedWords[2]);
 	}
@@ -38,6 +39,7 @@ int interpreter(char* parsedWords[]) {
 	else { printf("Unknown command\n"); }
 
 	//TODO: error code is not used!!
+	free(*parsedWords);
 	return 0;
 }
 
@@ -51,9 +53,12 @@ void help() {
 
 }
 
-void quit() {
-	exit(EXIT_SUCCESS);
+void quit(bool isFromScript) {
+    printf("Bye!\n");
 
+    if (!isFromScript) {
+        exit(EXIT_SUCCESS);
+    }
 	//TODO: should handle the script exit!!!
 }
 
@@ -94,36 +99,28 @@ int run(char* scriptName) {
 
 		while (*line != '\0' && commandsIndex < 100) {
 			//no need to read the next file input
-			char* command[100];
+			char** command = (char**) malloc(sizeof(char*) * 100);
 
 			//terminate for each command
 			parseInput(&line, command);
 
 			commands[commandsIndex] = command;
 			commandsIndex ++;
-			//line ++;
 		}
 
 	}
 	fclose(scriptP);
 
 	//parsed all commands in the file
-//	int i = 0;
-//	while (i < commandsIndex) {
-//		int errCode = interpreter(commands[i]);
-//		if (errCode == -1) {
-//			return -1;
-//		}
-//
-//		i ++;
-//	}
+	int i = 0;
+	while (i < commandsIndex) {
+		int errCode = interpreter(commands[i], true);
+		if (errCode == -1) {
+			return -1;
+		}
 
-//	int i =0;
-//	while ( i < commandsIndex) {
-//		printf ("%d th: %s\n", i, commands[i][0]);
-//		i ++;
-//	}
-
+		i ++;
+	}
 
 	return 0;
 }

@@ -1,0 +1,12 @@
+current todo
+TODO: file recurssion stack overflow
+
+todo: not free the memory (still a problem)
+
+todo: redesign the error code
+
+todo: the script should stop when there is an error, (not checked)
+
+todo: the script's quit is not handled properly... (it quits the program not only the script, WIP)
+
+todo: still not clear about the file end and \r\n

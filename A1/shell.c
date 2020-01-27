@@ -9,17 +9,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "interpreter.h"
 #include "shell.h"
 
 void printString(char** input, int size);
+void skipSpaces(char**);
 
 int main (void)
 {
-	printf ("Welcome to the sandra shell!\n");
+	printf ("Welcome to the Sandra Deng's shell!\n");
 	printf ("Version 1.0 Created January 2020\n");
 
-	//TODO: need to input file name as arg?
 	while (1) {
         char* commandInput = (char*) malloc (sizeof(char) * 1000);
 
@@ -30,30 +31,28 @@ int main (void)
         char* parsedInput[100];
         parseInput(&commandInput, parsedInput);
 
-        int errorCode = interpreter (parsedInput);
+        int errorCode = interpreter(parsedInput, false);
         if (errorCode == -1) {
             exit(EXIT_FAILURE);
         }
 
 	}
-
-	return 0;
 }
 
 void parseInput(char** commandInput,  char** parsedInput) {
-
-	while (**commandInput == ' ' && **commandInput != '\n' && **commandInput != '\r') {
-		(*commandInput)++;
-	}
 
 	int parsedInputIndex = 0;
 
 	char word[100];
 	while (**commandInput != '\0' && parsedInputIndex < 100) {
 
+        //skip the space at the beginning
+        skipSpaces(commandInput);
+
         int wordIndex = 0;
-		for (; wordIndex < 100 && **commandInput != ' ' && **commandInput != '\0' && **commandInput != '\n'; wordIndex++, (*commandInput)++) {
-			word[wordIndex] = **commandInput;
+		for (; wordIndex < 100 && **commandInput != ' ' && **commandInput != '\0'
+		        && **commandInput != '\n'; wordIndex++, (*commandInput)++) {
+		    word[wordIndex] = **commandInput;
 		}
 
 		word[wordIndex] = '\0';
@@ -75,4 +74,12 @@ void printString(char** input, int size) {
 	for (; i < size; i++) {
 		printf ("line %d: %s \n", i, input[i]);
 	}
+}
+
+void skipSpaces(char** commandInput) {
+    while (**commandInput == ' ' && **commandInput != '\n' && **commandInput != '\r') {
+        (*commandInput)++;
+    }
+
+    return;
 }
