@@ -1,5 +1,5 @@
 current todo
-todo: not free the memory (still a problem)
+todo: not free the memory (partially done, not check completely!!)
 
 todo: not handle the memory full case
 
