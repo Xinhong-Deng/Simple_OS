@@ -106,12 +106,19 @@ int run(char* scriptName) {
 	int i = 0;
 	while (i < commandsIndex) {
 		int errCode = interpreter(commands[i], true);
+        i ++;
+
 		if (errCode != 0) {
 		    //terminate the execution when there is an error
-			return errCode;
-		}
+		    if (errCode == PRINT_ERROR) {
+		        //not terminate the script
+                printf("Variable does not exist\n");
+                continue;
+		    }
 
-		i ++;
+		    //terminate the script
+            return errCode;
+		}
 	}
 
 	return 0;

@@ -1,10 +1,7 @@
 current todo
-todo: not free the memory (partially done, not check completely!!)
 
 todo: not handle the memory full case
 
 todo: different behaviours for "run testfile" and "< testfile" on errCode
-
-todo: terminate the script for all errCode or just syntax error?? (now it is for all errCode)
 
 todo: still not clear about the file end and \r\n

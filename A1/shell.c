@@ -24,6 +24,7 @@ int main (void)
 
 	while (1) {
         char* commandInput = (char*) malloc (sizeof(char) * 1000);
+        char* head = commandInput;
 
         printf ("$ ");
         //TODO: CARRIAGE RETURN!!! \r\n, how to deal with it? does it terminate with \r\n or \0??
@@ -31,6 +32,7 @@ int main (void)
 
         char* parsedInput[100];
         parseInput(&commandInput, parsedInput);
+        free(head);
 
         int errorCode = interpreter(parsedInput, false);
         if (errorCode == -1) {
@@ -44,7 +46,7 @@ int main (void)
         } else if (errorCode == QUIT_FROM_SCRIPT) {
             //do nothing, wait for user input
         }
-
+        free(head);
 	}
 }
 
