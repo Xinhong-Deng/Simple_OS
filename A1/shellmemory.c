@@ -18,16 +18,15 @@ ShellMem* shellMem[100];
 
 int memSize = 0;
 
-void setMem(char* key, char* value) {
+int setMem(char* key, char* value) {
 	ShellMem* target = getElement(key, true);
 
 	if (target == NULL) {
-		//move it out??
-		printf("no space in the shell memory\n");
-		return;
+		return MEMORY_FULL;
 	}
 
 	target->value = strdup(value);
+	return 0;
 }
 
 char* getValue(char* key) {

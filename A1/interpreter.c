@@ -11,11 +11,11 @@
 #include <string.h>
 #include "interpreter.h"
 #include "shell.h"
-#include "shellmemory.h"
+
 
 void help();
 int quit(bool);
-void set(char*, char*);
+int set(char*, char*);
 int print(char*);
 int run(char*);
 
@@ -24,7 +24,7 @@ int interpreter(char** parsedWords, bool isFromScript) {
 
 	if (strcmp(parsedWords[0], "help") == 0) { help(); }
 	else if (strcmp(parsedWords[0], "quit") == 0) { errCode = quit(isFromScript); }
-	else if (strcmp(parsedWords[0], "set") == 0) { set(parsedWords[1], parsedWords[2]); }
+	else if (strcmp(parsedWords[0], "set") == 0) { errCode = set(parsedWords[1], parsedWords[2]); }
 	else if (strcmp(parsedWords[0], "print") == 0) { errCode = print(parsedWords[1]); }
 	else if (strcmp(parsedWords[0], "run") == 0) { errCode = run(parsedWords[1]); }
 	else if (strcmp(parsedWords[0], "") == 0) { }
@@ -55,8 +55,8 @@ int quit(bool isFromScript) {
     }
 }
 
-void set(char* varName, char* value) {
-	setMem(varName, value);
+int set(char* varName, char* value) {
+	return setMem(varName, value);
 }
 
 int print(char* name) {

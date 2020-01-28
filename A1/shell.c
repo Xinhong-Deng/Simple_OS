@@ -43,6 +43,8 @@ int main (void)
             printf("Script not found\n");
         } else if (errorCode == SYNTAX_ERROR) {
             printf("Unknown command\n");
+        } else if (errorCode == MEMORY_FULL) {
+            printf("No space in the shell memory\n");
         } else if (errorCode == QUIT_FROM_SCRIPT) {
             //do nothing, wait for user input
         }

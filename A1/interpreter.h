@@ -13,6 +13,7 @@
 #define QUIT_FROM_SCRIPT 1
 
 #include <stdbool.h>
+#include "shellmemory.h"
 int interpreter(char**, bool);
 void freeShellMemory();
 
