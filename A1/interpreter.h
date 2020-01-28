@@ -14,6 +14,7 @@
 
 #include <stdbool.h>
 int interpreter(char**, bool);
+void freeShellMemory();
 
 
 #endif /* INTERPRETER_H_ */

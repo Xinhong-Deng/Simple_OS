@@ -16,6 +16,8 @@ ShellMem* getElement(char*, bool);
 
 ShellMem* shellMem[100];
 
+int memSize = 0;
+
 void setMem(char* key, char* value) {
 	ShellMem* target = getElement(key, true);
 
@@ -46,6 +48,7 @@ ShellMem* getElement(char* key, bool isCreateNewElement) {
 		if (shellMem[i] == NULL) {
 			if (isCreateNewElement) {
 				shellMem[i] = (ShellMem*) malloc(sizeof (ShellMem));
+				memSize ++;
 				target = shellMem[i];
 				target->key = strdup(key);
 			}
@@ -61,4 +64,12 @@ ShellMem* getElement(char* key, bool isCreateNewElement) {
 	}
 
 	return target;
+}
+
+void freeShellMemory() {
+    int i = 0;
+    for (; i < memSize; i++) {
+        free(shellMem[i]);
+    }
+    memSize = 0;
 }

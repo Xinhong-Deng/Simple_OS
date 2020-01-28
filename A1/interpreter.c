@@ -47,6 +47,7 @@ int quit(bool isFromScript) {
     printf("Bye!\n");
 
     if (!isFromScript) {
+        freeShellMemory();
         exit(EXIT_SUCCESS);
         return 0;
     } else {
