@@ -5,4 +5,4 @@
  *      Author: sandr
  */
 
-void  parseInput(char**, char**);
+int  parseInput(char**, char**);

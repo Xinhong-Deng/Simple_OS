@@ -14,7 +14,7 @@
 
 #include <stdbool.h>
 #include "shellmemory.h"
-int interpreter(char**, bool);
+int interpreter(char**, bool, int);
 void freeShellMemory();
 
 

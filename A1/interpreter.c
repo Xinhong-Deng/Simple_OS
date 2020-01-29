@@ -19,7 +19,7 @@ int set(char*, char*);
 int print(char*);
 int run(char*);
 
-int interpreter(char** parsedWords, bool isFromScript) {
+int interpreter(char** parsedWords, bool isFromScript, int sizeOfPrasedWords) {
 	int errCode = 0;
 
 	if (strcmp(parsedWords[0], "help") == 0) { help(); }
@@ -30,7 +30,11 @@ int interpreter(char** parsedWords, bool isFromScript) {
 	else if (strcmp(parsedWords[0], "") == 0) { }
 	else { errCode = SYNTAX_ERROR; }
 
-	free(*parsedWords);
+	int i = 0;
+	for (; i < sizeOfPrasedWords; i++) {
+        free(parsedWords[i]);
+	}
+
 	return errCode;
 }
 
@@ -76,6 +80,8 @@ int run(char* scriptName) {
 		return SCRIPT_NOT_FOUND;
 	}
 
+	int sizesOfParsedInput[100];
+
 	char** commands[100];		//accept script with 100 lines of command
 	int commandsIndex = 0;
 	while (!feof(scriptP)) {
@@ -93,8 +99,7 @@ int run(char* scriptName) {
 			char** command = (char**) malloc(sizeof(char*) * 100);
 
 			//parse each line
-			parseInput(&line, command);
-
+			sizesOfParsedInput[commandsIndex] = parseInput(&line, command);
 			commands[commandsIndex] = command;
 			commandsIndex ++;
 		}
@@ -105,7 +110,7 @@ int run(char* scriptName) {
 	//execute commands in the file one by one
 	int i = 0;
 	while (i < commandsIndex) {
-		int errCode = interpreter(commands[i], true);
+		int errCode = interpreter(commands[i], true, sizesOfParsedInput[i]);
         i ++;
 
 		if (errCode != 0) {

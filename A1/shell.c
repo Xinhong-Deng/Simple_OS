@@ -36,10 +36,10 @@ int main (int argc, char** argv)
         }
 
         char* parsedInput[100];
-        parseInput(&commandInput, parsedInput);
+        int sizeOfParsedInput = parseInput(&commandInput, parsedInput);
         free(head);
 
-        int errorCode = interpreter(parsedInput, false);
+        int errorCode = interpreter(parsedInput, false, sizeOfParsedInput);
         if (errorCode == -1) {
             exit(EXIT_FAILURE);
         } else if (errorCode == PRINT_ERROR) {
@@ -57,7 +57,7 @@ int main (int argc, char** argv)
 	}
 }
 
-void parseInput(char** commandInput,  char** parsedInput) {
+int parseInput(char** commandInput,  char** parsedInput) {
 
 	int parsedInputIndex = 0;
 
@@ -80,6 +80,7 @@ void parseInput(char** commandInput,  char** parsedInput) {
 		(*commandInput) ++;
 	}
 
+	return (parsedInputIndex --);
 }
 
 void skipSpaces(char** commandInput) {
