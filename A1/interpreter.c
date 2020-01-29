@@ -40,10 +40,10 @@ int interpreter(char** parsedWords, bool isFromScript, int sizeOfPrasedWords) {
 
 void help() {
 	printf("COMMAND \t \t DESCRIPTION\n");
-	printf("help \t \t \t Display all the commands\n");
-	printf("quit \t \t \t Exits / terminated the shell with \"Bye!\" \n");
+	printf("help \t \t \t Displays all the commands\n");
+	printf("quit \t \t \t Exits / terminats the shell with \"Bye!\" \n");
 	printf("set VAR STRING \t \t Assigns a value to shell memory\n");
-	printf("print VAR \t \t Display the STRING assigned to VAR\n");
+	printf("print VAR \t \t Displays the STRING assigned to VAR\n");
 	printf("run SCRIPT.TXT \t \t Executes the file SCRIPT.TXT \n");
 }
 
