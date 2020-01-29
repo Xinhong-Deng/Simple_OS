@@ -17,6 +17,7 @@
 void printString(char** input, int size);
 void skipSpaces(char**);
 void printWordArrays(char** input, int inputSize);
+void printWord(char*, int);
 
 int main (int argc, char** argv)
 {
@@ -69,9 +70,20 @@ int parseInput(char** commandInput,  char** parsedInput) {
 
         int wordIndex = 0;
 		for (; wordIndex < 100 && **commandInput != ' ' && **commandInput != '\0'
-		        && **commandInput != '\n'; wordIndex++, (*commandInput)++) {
+		        && **commandInput != '\r' && **commandInput != '\n'; wordIndex++, (*commandInput)++) {
+
+		    /* keyboard type in ends with '\n\0'
+		     * file input ends with '\r\n\0'
+		     */
+
+		    printf("%d th char: %c %d\n", wordIndex, **commandInput, **commandInput);
 		    word[wordIndex] = **commandInput;
 		}
+
+		if (**commandInput == '\r') {
+            (*commandInput) ++;
+		}
+        printf("terminated by %d\n",  **commandInput);
 
 		word[wordIndex] = '\0';
 		parsedInput[parsedInputIndex] = strdup(word);
@@ -79,6 +91,8 @@ int parseInput(char** commandInput,  char** parsedInput) {
 		parsedInputIndex ++;
 		(*commandInput) ++;
 	}
+
+	printf("whole command terminate by: %d\n", **commandInput);
 
 	return (parsedInputIndex --);
 }
@@ -104,4 +118,11 @@ void printWordArrays(char** input, int inputSize) {
         printf("word %d: %s\n", i, input[i]);
 		printf("%d\n", input[i][0]);
 	}
+}
+
+void printWord(char* word, int wordSize) {
+    int i = 0;
+    for (; i < wordSize; i ++) {
+	    printf("%c %d\n", word[i], word[i]);
+    }
 }
