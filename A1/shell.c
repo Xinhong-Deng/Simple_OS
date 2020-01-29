@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include "interpreter.h"
 #include "shell.h"
 
@@ -17,18 +18,22 @@ void printString(char** input, int size);
 void skipSpaces(char**);
 void printWordArrays(char** input, int inputSize);
 
-int main (void)
+int main (int argc, char** argv)
 {
 	printf ("Welcome to the Sandra Deng's shell!\n");
 	printf ("Version 1.0 Created January 2020\n");
 
 	while (1) {
-        char* commandInput = (char*) malloc (sizeof(char) * 1000);
+        char* commandInput = (char*) malloc(sizeof(char) * 1000);
         char* head = commandInput;
 
         printf ("$ ");
         //TODO: CARRIAGE RETURN!!! \r\n, how to deal with it? does it terminate with \r\n or \0??
-        fgets (commandInput, 999, stdin);
+        fgets(commandInput, 999, stdin);
+        if (!isatty(STDIN_FILENO)) {
+            // input from tile redirection
+            printf("%s", commandInput);
+        }
 
         char* parsedInput[100];
         parseInput(&commandInput, parsedInput);
@@ -48,7 +53,7 @@ int main (void)
         } else if (errorCode == QUIT_FROM_SCRIPT) {
             //do nothing, wait for user input
         }
-        free(head);
+
 	}
 }
 
@@ -75,8 +80,6 @@ void parseInput(char** commandInput,  char** parsedInput) {
 		(*commandInput) ++;
 	}
 
-
-
 }
 
 void skipSpaces(char** commandInput) {
@@ -86,7 +89,6 @@ void skipSpaces(char** commandInput) {
 
     return;
 }
-
 
 // debug use only!!!
 void printString(char** input, int size) {

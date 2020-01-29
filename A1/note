@@ -1,7 +1,7 @@
 current todo
 
-todo: not handle the memory full case
-
 todo: different behaviours for "run testfile" and "< testfile" on errCode
 
 todo: still not clear about the file end and \r\n
+
+todo: not handle the string variable properly.. (eg. "from testfile.txt", you will get "from only..)
