@@ -29,7 +29,6 @@ int main (int argc, char** argv)
         char* head = commandInput;
 
         printf ("$ ");
-        //TODO: CARRIAGE RETURN!!! \r\n, how to deal with it? does it terminate with \r\n or \0??
         fgets(commandInput, 999, stdin);
         if (!isatty(STDIN_FILENO)) {
             // input from tile redirection
@@ -76,14 +75,12 @@ int parseInput(char** commandInput,  char** parsedInput) {
 		     * file input ends with '\r\n\0'
 		     */
 
-		    printf("%d th char: %c %d\n", wordIndex, **commandInput, **commandInput);
 		    word[wordIndex] = **commandInput;
 		}
 
 		if (**commandInput == '\r') {
             (*commandInput) ++;
 		}
-        printf("terminated by %d\n",  **commandInput);
 
 		word[wordIndex] = '\0';
 		parsedInput[parsedInputIndex] = strdup(word);
@@ -91,8 +88,6 @@ int parseInput(char** commandInput,  char** parsedInput) {
 		parsedInputIndex ++;
 		(*commandInput) ++;
 	}
-
-	printf("whole command terminate by: %d\n", **commandInput);
 
 	return (parsedInputIndex --);
 }
