@@ -1,7 +1,0 @@
-current todo
-
-todo: different behaviours for "run testfile" and "< testfile" on errCode
--- not going to fix it (2020.01.29)
-
-todo: not handle the string variable properly.. (eg. "from testfile.txt", you will get "from only..)
--- not going to fix it (2020.01.29)
