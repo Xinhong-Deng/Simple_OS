@@ -16,6 +16,7 @@ void addToRam(FILE* p, int* start, int* end) {
             break;
         }
 
+        //todo: handle ram[] is full??
         ram[currentAvailablePos] = strdup(buffer);
         currentAvailablePos ++;
     }
