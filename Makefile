@@ -1,16 +1,12 @@
 CFLAG=-I.
+OBJ=build/shellmemory.o build/interpreter.o build/shell.o
 
-mysh: shell.o shellmemory.o interpreter.o
-	gcc -o mysh shell.o shellmemory.o interpreter.o
+mysh: $(OBJ)
+	gcc -o build/mysh $(OBJ)
 	
-shell.o: shell.c
-	gcc -c $^ $(CFLAG)
+build/%.o: %.c
+	gcc -c $^ -o $@ $(CFLAG)
 
-shellmemory.o: shellmemory.c shellmemory.h
-	gcc -c shellmemory.c
-
-interpreter.o: interpreter.c interpreter.h
-	gcc -c interpreter.c
 
 clear:
-	rn *.o mysh
+	rm $(OBJ) build/mysh
