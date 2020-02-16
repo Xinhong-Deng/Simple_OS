@@ -18,10 +18,11 @@ void printString(char** input, int size);
 void skipSpaces(char**);
 void printWordArrays(char** input, int inputSize);
 
-int main (int argc, char** argv)
+int shellUI (int argc, char** argv)
 {
+    printf ("Kernel 1.0 loaded!\n");
 	printf ("Welcome to the Sandra Deng's shell!\n");
-	printf ("Version 1.0 Created January 2020\n");
+	printf ("Shell version 2.0 Updated February 2020\n");
 
 	while (1) {
         char* commandInput = (char*) malloc(sizeof(char) * 1000);

@@ -6,3 +6,4 @@
  */
 
 int  parseInput(char**, char**);
+int shellUI(int, char**);
