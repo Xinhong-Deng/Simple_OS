@@ -1,74 +1,80 @@
-/*
- * shellmemory.c
- *
- *  Created on: Jan 17, 2020
- *      Author: sandra deng
- *   McGill ID: 260770487
- */
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdbool.h>
 #include "shellmemory.h"
 
-ShellMem* getElement(char*, bool);
+#include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
 
-ShellMem* shellMem[100];
+typedef struct
+{
+    char *key;
+    char *value;
+} mem_t;
 
-int memSize = 0;
+#define MEM_LENGTH 100
+mem_t memory[MEM_LENGTH];
 
-int setMem(char* key, char* value) {
-	ShellMem* target = getElement(key, true);
-
-	if (target == NULL) {
-		return MEMORY_FULL;
-	}
-
-	target->value = strdup(value);
-	return 0;
-}
-
-char* getValue(char* key) {
-	ShellMem* target = getElement(key, false);
-
-	if (target == NULL) {
-		return NULL;
-	}
-
-	return target->value;
-}
-
-ShellMem* getElement(char* key, bool isCreateNewElement) {
-	ShellMem* target = NULL;
-
-	int i = 0;
-	while (i < 100) {
-		if (shellMem[i] == NULL) {
-			if (isCreateNewElement) {
-				shellMem[i] = (ShellMem*) malloc(sizeof (ShellMem));
-				memSize ++;
-				target = shellMem[i];
-				target->key = strdup(key);
-			}
-			break;
-		}
-
-		if (strcmp(shellMem[i]->key, key) == 0) {
-			target = shellMem[i];
-			break;
-		}
-
-		i++;
-	}
-
-	return target;
-}
-
-void freeShellMemory() {
-    int i = 0;
-    for (; i < memSize; i++) {
-        free(shellMem[i]);
+void shell_memory_initialize()
+{
+    for (size_t i = 0; i < MEM_LENGTH; ++i)
+    {
+        memory[i].key = NULL;
+        memory[i].value = NULL;
     }
-    memSize = 0;
+}
+
+void shell_memory_destory()
+{
+    for (size_t i = 0; i < MEM_LENGTH; ++i)
+    {
+        if (memory[i].key != NULL)
+            free(memory[i].key);
+        if (memory[i].value != NULL)
+            free(memory[i].value);
+    }
+}
+
+const char *shell_memory_get(const char *key)
+{
+    for (size_t i = 0; i < MEM_LENGTH; ++i)
+    {
+        if (memory[i].key == NULL)
+            continue;
+        if (strcmp(memory[i].key, key) == 0)
+            return memory[i].value;
+    }
+    return NULL;
+}
+
+int shell_memory_set(const char *key, const char *value)
+{
+    for (size_t i = 0; i < MEM_LENGTH; ++i)
+    {
+        if (memory[i].key == NULL)
+            continue;
+        if (strcmp(memory[i].key, key) == 0)
+        {
+            free(memory[i].value);
+            memory[i].value = strdup(value);
+            return 0;
+        }
+    }
+    size_t possible_slot = MEM_LENGTH;
+    for (size_t i = 0; i < MEM_LENGTH; ++i)
+    {
+        if (memory[i].key == NULL && memory[i].value == NULL)
+        {
+            possible_slot = i;
+            break;
+        }
+    }
+    if (possible_slot == MEM_LENGTH)
+    {
+        return -1;
+    }
+    else
+    {
+        memory[possible_slot].key = strdup(key);
+        memory[possible_slot].value = strdup(value);
+        return 0;
+    }
 }

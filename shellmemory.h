@@ -1,22 +1,10 @@
-/*
- * shellmemory.h
- *
- *  Created on: Jan 18, 2020
- *      Author: sandr
- */
+#ifndef SHELLMEMORY_H
+#define SHELLMEMORY_H
 
-#ifndef SHELLMEMORY_H_
-#define SHELLMEMORY_H_
-#define MEMORY_FULL -5
+int shell_memory_set(const char *key, const char *value);
+const char *shell_memory_get(const char *key);
 
-typedef struct ShellMem {
-	char* key;
-	char* value;
-} ShellMem;
+void shell_memory_initialize();
+void shell_memory_destory();
 
-extern ShellMem* shellMem[];
-char* getValue (char*);
-int setMem (char*, char*);
-
-
-#endif /* SHELLMEMORY_H_ */
+#endif
