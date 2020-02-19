@@ -1,132 +1,229 @@
-/*
- * interpreter.c
- *
- *  Created on: Jan 17, 2020
- *      Author: sandra deng
- *   McGill ID: 260770487
- */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "interpreter.h"
-#include "shell.h"
+#include "shellmemory.h"
 
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+#include <stdio.h>
 
-void help();
-int quit(bool);
-int set(char*, char*);
-int print(char*);
-int run(char*);
-
-int interpreter(char** parsedWords, bool isFromScript, int sizeOfPrasedWords) {
-	int errCode = 0;
-
-	if (strcmp(parsedWords[0], "help") == 0) { help(); }
-	else if (strcmp(parsedWords[0], "quit") == 0) { errCode = quit(isFromScript); }
-	else if (strcmp(parsedWords[0], "set") == 0) { errCode = set(parsedWords[1], parsedWords[2]); }
-	else if (strcmp(parsedWords[0], "print") == 0) { errCode = print(parsedWords[1]); }
-	else if (strcmp(parsedWords[0], "run") == 0) { errCode = run(parsedWords[1]); }
-	else if (strcmp(parsedWords[0], "") == 0) { }
-	else { errCode = SYNTAX_ERROR; }
-
-	int i = 0;
-	for (; i < sizeOfPrasedWords; i++) {
-        free(parsedWords[i]);
-	}
-
-	return errCode;
-}
-
-void help() {
-	printf("COMMAND \t \t DESCRIPTION\n");
-	printf("help \t \t \t Display all the commands\n");
-	printf("quit \t \t \t Exits / terminated the shell with \"Bye!\" \n");
-	printf("set VAR STRING \t \t Assigns a value to shell memory\n");
-	printf("print VAR \t \t Display the STRING assigned to VAR\n");
-	printf("run SCRIPT.TXT \t \t Executes the file SCRIPT.TXT \n");
-}
-
-int quit(bool isFromScript) {
-    printf("Bye!\n");
-
-    if (!isFromScript) {
-        freeShellMemory();
-        exit(EXIT_SUCCESS);
-        return 0;
-    } else {
-        return QUIT_FROM_SCRIPT;
+char **tokenize(char *str)
+{
+    size_t num_tokens = 1;
+    int flag = 0;
+    for (size_t i = 0; i < strlen(str); i++)
+    {
+        if (flag == 0 && str[i] == ' ')
+        {
+            num_tokens = num_tokens + 1;
+            flag = 1;
+        }
+        if (str[i] != ' ')
+        {
+            flag = 0;
+        }
     }
+    char **ret_arr =
+            (char **)malloc(sizeof(char *) * (num_tokens + 1));
+
+    if (ret_arr == NULL)
+    {
+        perror("malloc");
+        return NULL;
+    }
+    flag = 0;
+    int ignore_flag = 0;
+    char *modified_str = (char *)str;
+    size_t counter = 0;
+    const size_t length_str = strlen(str);
+    for (size_t i = 0; i < length_str; i++)
+    {
+        if (modified_str[i] == '\n' || modified_str[i] == '\r')
+            modified_str[i] = ' ';
+        if (modified_str[i] == '"')
+        {
+            ignore_flag = ignore_flag ^ 0x1;
+        }
+        if (flag == 0 && modified_str[i] != ' ')
+        {
+            ret_arr[counter] = &(modified_str[i]);
+            counter = counter + 1;
+            flag = 1;
+        }
+        if (modified_str[i] == '\\' && modified_str[i + 1] == ' ')
+        {
+            i++;
+            continue;
+        }
+        if (flag == 1 && modified_str[i] == ' ' && ignore_flag == 0)
+        {
+            modified_str[i] = '\0';
+            flag = 0;
+            continue;
+        }
+    }
+    ret_arr[counter] = NULL;
+
+    for (size_t i = 0; i < counter; ++i)
+    {
+        if (ret_arr[i][0] == '\"' &&
+            ret_arr[i][strlen(ret_arr[i] - 1)] == '\"')
+        {
+            ret_arr[i][strlen(ret_arr[i]) - 1] = '\0';
+            ret_arr[i] = ret_arr[i] + 1;
+        }
+    }
+
+    return ret_arr;
 }
 
-int set(char* varName, char* value) {
-	return setMem(varName, value);
+int in_file_flag = 0;
+int interpret(char *raw_input);
+
+int help()
+{
+    printf(""
+           "COMMAND         DESCRIPTION\n"
+           "help            Displays all the commands\n"
+           "quit            Exits / terminates the shell with \"Bye!\"\n"
+           "set VAR STRING  Assigns a value to shell memory\n"
+           "print VAR       Displays the STRING assigned to VAR\n"
+           "run SCRIPT.TXT  Executes the file SCRIPT.TXT\n");
+    return 0;
 }
 
-int print(char* name) {
-	char* value = getValue(name);
-
-	if (value == NULL) {
-		return PRINT_ERROR;
-	}
-
-	printf("%s\n", value);
-	return 0;
+int quit()
+{
+    printf("Bye!\n");
+    if (in_file_flag == 0)
+    {
+        shell_memory_destory();
+        exit(0);
+    }
+    return 0;
 }
 
-int run(char* scriptName) {
-	FILE* scriptP = fopen(scriptName, "r");
-	if (scriptP == NULL) {
-		return SCRIPT_NOT_FOUND;
-	}
+int run(const char *path)
+{
+    FILE *file = fopen(path, "r");
+    if (file == NULL)
+    {
+        printf("Script not found.\n");
+        return 1;
+    }
+    int enter_flag_status = in_file_flag;
+    in_file_flag = 1;
+    while (!feof(file))
+    {
+        char *line = NULL;
+        size_t linecap = 0;
+        getline(&line, &linecap, file);
 
-	int sizesOfParsedInput[100];
-
-	char** commands[100];		//accept script with 100 lines of command
-	int commandsIndex = 0;
-	while (!feof(scriptP)) {
-
-		if (commandsIndex > 100) {
-			//TODO: exception handle??
-			break;
-		}
-
-		char* line = (char*) malloc(sizeof (char) * 1000);
-		fgets(line, 999, scriptP);
-
-		while (*line != '\0' && commandsIndex < 100) {
-			//no need to read the next file input
-			char** command = (char**) malloc(sizeof(char*) * 100);
-
-			//parse each line
-			sizesOfParsedInput[commandsIndex] = parseInput(&line, command);
-			commands[commandsIndex] = command;
-			commandsIndex ++;
-		}
-
-	}
-	fclose(scriptP);
-
-	//execute commands in the file one by one
-	int i = 0;
-	while (i < commandsIndex) {
-		int errCode = interpreter(commands[i], true, sizesOfParsedInput[i]);
-        i ++;
-
-		if (errCode != 0) {
-		    //terminate the execution when there is an error
-		    if (errCode == PRINT_ERROR) {
-		        //not terminate the script
-                printf("Variable does not exist\n");
-                continue;
-		    }
-
-		    //terminate the script
-            return errCode;
-		}
-	}
-
-	return 0;
+        int status = interpret(line);
+        free(line);
+        if (status != 0)
+        {
+            break;
+            return status;
+        }
+    }
+    fclose(file);
+    in_file_flag = enter_flag_status;
+    return 0;
 }
 
+int set(const char *key, const char *value)
+{
+    int status = shell_memory_set(key, value);
+    if (status != 0)
+        printf("set: Unable to set shell memory.\n");
+    return status;
+}
 
+int print(const char *key)
+{
+    const char *value = shell_memory_get(key);
+    if (value == NULL)
+    {
+        printf("print: Undefiend value.\n");
+        return 1;
+    }
+    printf("%s\n", value);
+    return 0;
+}
+
+int interpret(char *raw_input)
+{
+    char **tokens = tokenize(raw_input);
+
+    if (tokens[0] == NULL)
+        return 0; // empty command
+
+    if (strcmp(tokens[0], "help") == 0)
+    {
+        if (tokens[1] != NULL)
+        {
+            printf("help: Malformed command\n");
+            free(tokens);
+            return 1;
+        }
+        free(tokens);
+        return help();
+    }
+
+    if (strcmp(tokens[0], "quit") == 0)
+    {
+        if (tokens[1] != NULL)
+        {
+            printf("quit: Malformed command\n");
+            free(tokens);
+            return 1;
+        }
+        if (in_file_flag) {
+            free(raw_input);
+        }
+        free(tokens);
+        return quit();
+    };
+
+    if (strcmp(tokens[0], "set") == 0)
+    {
+        if (!(tokens[1] != NULL && tokens[2] != NULL && tokens[3] == NULL))
+        {
+            printf("set: Malformed command\n");
+            free(tokens);
+            return 1;
+        }
+        int status = set(tokens[1], tokens[2]);
+        free(tokens);
+        return status;
+    }
+
+    if (strcmp(tokens[0], "print") == 0)
+    {
+        if (!(tokens[1] != NULL && tokens[2] == NULL))
+        {
+            printf("print: Malformed command\n");
+            free(tokens);
+            return 1;
+        }
+        int status = print(tokens[1]);
+        free(tokens);
+        return status;
+    }
+
+    if (strcmp(tokens[0], "run") == 0)
+    {
+        if (!(tokens[1] != NULL && tokens[2] == NULL))
+        {
+            printf("run: Malformed command\n");
+            free(tokens);
+        }
+        int result = run(tokens[1]);
+        free(tokens);
+        return result;
+    }
+
+    printf("Unrecognized command \"%s\"\n", tokens[0]);
+    free(tokens);
+    return 1;
+}

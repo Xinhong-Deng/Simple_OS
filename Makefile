@@ -1,8 +1,8 @@
 CFLAG=-I.
-OBJ=build/shellmemory.o build/interpreter.o build/shell.o
+OBJ=build/shellmemory.o build/interpreter.o build/pcb.o build/ram.o build/shell.o build/kernel.o
 
-mysh: $(OBJ)
-	gcc -o build/mysh $(OBJ)
+mykrenel: $(OBJ)
+	gcc -o mykernel $(OBJ)
 	
 build/%.o: %.c
 	gcc -c $^ -o $@ $(CFLAG)
