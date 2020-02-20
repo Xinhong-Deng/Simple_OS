@@ -1,5 +1,8 @@
 #include "interpreter.h"
 #include "shellmemory.h"
+#include "ram.h"
+#include "pcb.h"
+#include "kernel.h"
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -77,7 +80,6 @@ char **tokenize(char *str)
 }
 
 int in_file_flag = 0;
-int interpret(char *raw_input);
 
 int help()
 {
@@ -87,7 +89,9 @@ int help()
            "quit            Exits / terminates the shell with \"Bye!\"\n"
            "set VAR STRING  Assigns a value to shell memory\n"
            "print VAR       Displays the STRING assigned to VAR\n"
-           "run SCRIPT.TXT  Executes the file SCRIPT.TXT\n");
+           "run SCRIPT.TXT  Executes the file SCRIPT.TXT\n"
+           "exec p1 p2 p3   Executes concurrent programs\n"
+           "                $ exec prog.txt prog2.txt\n");
     return 0;
 }
 
@@ -122,7 +126,6 @@ int run(const char *path)
         free(line);
         if (status != 0)
         {
-            break;
             return status;
         }
     }
@@ -149,6 +152,42 @@ int print(const char *key)
     }
     printf("%s\n", value);
     return 0;
+}
+
+int exec(const char *script1, char *script2, char *script3) {
+    if (script1 != NULL)
+    {
+        if (myinit(script1) != 0)
+        {
+            return 1;
+        }
+    }
+
+    if (script2 != NULL)
+    {
+        if (strcmp(script2, script1) == 0) {
+            printf("Error: Script %s already loaded \n", script2);
+            return 1;
+        }
+
+        if (myinit(script2) != 0)
+        {
+            return 1;
+        }
+    }
+    if (script3 != NULL)
+    {
+        if (strcmp(script3, script1) == 0 || strcmp(script3, script2) == 0) {
+            printf("Error: Script %s already loaded \n", script3);
+            return 1;
+        }
+
+        if (myinit(script3) != 0)
+        {
+            return 1;
+        }
+    }
+    return scheduler();
 }
 
 int interpret(char *raw_input)
@@ -217,8 +256,39 @@ int interpret(char *raw_input)
         {
             printf("run: Malformed command\n");
             free(tokens);
+            return 1;
         }
         int result = run(tokens[1]);
+        free(tokens);
+        return result;
+    }
+
+    if (strcmp(tokens[0], "exec") == 0)
+    {
+        char* scripts[3] = {NULL, NULL, NULL};
+        for (int i = 0; i < 3; i++)
+        {
+            if (tokens[1 + i] == NULL)
+            {
+                break;
+            }
+            scripts[i] = tokens[1 + i];
+        }
+
+        if (scripts[0] == NULL)
+        {
+            printf("exec: Malformed command\n");
+            free(tokens);
+            return 1;
+        }
+        if (tokens[4] != NULL && scripts[2] != NULL)
+        {
+            printf("exec: Provide more than 3 scripts\n");
+            free(tokens);
+            return 1;
+        }
+
+        int result = exec(scripts[0], scripts[1], scripts[2]);
         free(tokens);
         return result;
     }

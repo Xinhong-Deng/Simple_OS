@@ -12,12 +12,6 @@ typedef struct CPU {
     int quanta;
 } CPU;
 
-CPU* initCPU() {
-    CPU* cpu = (CPU*) malloc(sizeof(CPU));
-    cpu->quanta = 2;
-    return  cpu;
-}
-
 CPU* cpu;
 int cpuRun(int quanta);
 #endif //ECSE427_CPU_H
