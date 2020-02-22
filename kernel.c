@@ -56,9 +56,9 @@ int myinit(const char* fileName)
 int min(int a, int b)
 {
     if (a > b) {
-        return a;
+        return b;
     }
-    return b;
+    return a;
 }
 
 
@@ -81,7 +81,7 @@ int scheduler()
         PCB* currentPCB = currentNode->pcb;
         cpu->IP = currentPCB->PC;
 
-        int lineLeft = currentPCB->end - currentPCB->PC;
+        int lineLeft = currentPCB->end - currentPCB->PC + 1;
         int quanta = min(lineLeft, 2);
         if (cpuRun(quanta) != 0) {
             freeReadyQueue();
@@ -90,12 +90,15 @@ int scheduler()
 
         head = head->next;
         currentPCB->PC += quanta;
-        if (currentPCB->PC == currentPCB->end)
+        if (currentPCB->PC == currentPCB->end + 1)
         {
             // check whether the end of script
             free(currentNode);
         } else
         {
+            if (tail == head) {
+                continue;
+            }
             tail->next = currentNode;
             tail = currentNode;
         }
