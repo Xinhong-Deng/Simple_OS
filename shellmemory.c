@@ -1,6 +1,6 @@
 #include "shellmemory.h"
+#include "statusCode.h"
 
-#include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -69,7 +69,7 @@ int shell_memory_set(const char *key, const char *value)
     }
     if (possible_slot == MEM_LENGTH)
     {
-        return -1;
+        return MEMORY_FULL;
     }
     else
     {

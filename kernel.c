@@ -9,6 +9,7 @@
 #include "shell.h"
 #include "ram.h"
 #include "cpu.h"
+#include "statusCode.h"
 
 int main(int argc, char** argv)
 {
@@ -22,6 +23,7 @@ void addToReadyQueue(PCB* pcb)
 {
     Node* newNode = (Node*) malloc(sizeof(Node));
     newNode->pcb = pcb;
+    newNode->next = NULL;
     if (head != NULL)
     {
         tail->next = newNode;
@@ -41,8 +43,7 @@ int myinit(const char* fileName)
     FILE* f1 = fopen(fileName, "r");
     if (f1 == NULL)
     {
-        printf("Error: script not found\n");
-        return 1;
+        return SCRIPT_NOT_FOUND;
     }
     int start = 0;
     int end = 0;
@@ -88,17 +89,19 @@ int scheduler()
             return 1;
         }
 
-        head = head->next;
         currentPCB->PC += quanta;
         if (currentPCB->PC == currentPCB->end + 1)
         {
             // check whether the end of script
+            head = head->next;
             free(currentNode);
         } else
         {
             if (tail == head) {
                 continue;
             }
+            head = head->next;
+            currentNode->next = NULL;
             tail->next = currentNode;
             tail = currentNode;
         }

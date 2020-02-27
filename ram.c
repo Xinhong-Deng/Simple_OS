@@ -25,3 +25,8 @@ void addToRam(FILE* p, int* start, int* end) {
 
 }
 
+void printRam() {
+    for (int i = 0; i < currentAvailablePos; i++) {
+        printf("debug: ram[%d]: %s", i, ram[i]);
+    }
+}

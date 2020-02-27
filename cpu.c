@@ -10,14 +10,16 @@
 #include "shell.h"
 
 int cpuRun(int quanta) {
-    for (int i =0; i < quanta; i++) {
+    for (int i = 0; i < quanta; i++) {
 
         strcpy(cpu->IR, ram[cpu->IP]);
-        int errCode = interpret(cpu->IR);
-        if (errCode != 0) {
+        int errCode = interpret(cpu->IR, true);
+        if (errCode < 0) {
+            // 0: no error; 1: quit from file
             return errCode;
         }
         free(ram[cpu->IP]);
+//        printf("debug: freed ram[%d]\n", cpu->IP);
         cpu->IP ++;
     }
     return 0;

@@ -8,5 +8,5 @@
 #include <stdio.h>
 char* ram[1000];
 void addToRam(FILE* p, int* start, int* end);
-
+void printRam();
 #endif //ECSE427_RAM_H
