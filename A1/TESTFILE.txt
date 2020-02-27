@@ -1,0 +1,7 @@
+help
+set x 10
+print x
+set x 1000        
+print x
+quit
+
