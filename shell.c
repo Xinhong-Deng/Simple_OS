@@ -24,6 +24,7 @@ int shellUI(int argc, const char *argv[])
 
         (void)interpret(line);
         free(line);
+        printf("line freed\n");
     }
 
     shell_memory_destory();

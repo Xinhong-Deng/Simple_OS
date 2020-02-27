@@ -22,6 +22,7 @@ void addToReadyQueue(PCB* pcb)
 {
     Node* newNode = (Node*) malloc(sizeof(Node));
     newNode->pcb = pcb;
+    newNode->next = NULL;
     if (head != NULL)
     {
         tail->next = newNode;
@@ -89,7 +90,7 @@ int scheduler()
         }
 
         currentPCB->PC += quanta;
-        if (currentPCB->PC == currentPCB->end + 1)
+        if (currentPCB->PC >= currentPCB->end + 1)
         {
             // check whether the end of script
             head = head->next;

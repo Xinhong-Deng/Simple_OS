@@ -225,9 +225,12 @@ int interpret(char *raw_input)
             return 1;
         }
         if (in_file_flag) {
+            printf("try to free raw_input\n");
             free(raw_input);
+            printf("freed raw_input\n");
         }
         free(tokens);
+        printf("freed tokens quit\n");
         return quit();
     };
 
