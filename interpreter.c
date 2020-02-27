@@ -78,8 +78,12 @@ char **tokenize(char *str, size_t* numTokens)
     return ret_arr;
 }
 
-int help()
+int help(const size_t numParameter)
 {
+    if (numParameter > 0) {
+        return TOO_MANY_ARGUMENTS;
+    }
+
     printf(""
            "COMMAND         DESCRIPTION\n"
            "help            Displays all the commands\n"
@@ -92,7 +96,11 @@ int help()
     return 0;
 }
 
-int quit(bool isFromScript) {
+int quit(bool isFromScript, const size_t numParameter) {
+    if (numParameter > 0) {
+        return TOO_MANY_ARGUMENTS;
+    }
+
     printf("Bye!\n");
 
     if (!isFromScript) {
@@ -103,8 +111,12 @@ int quit(bool isFromScript) {
     }
 }
 
-int run(const char *path)
+int run(const char *path, const size_t numParameter)
 {
+    if (numParameter > 1) {
+        return TOO_MANY_ARGUMENTS;
+    }
+
     FILE *file = fopen(path, "r");
     if (file == NULL)
     {
@@ -128,15 +140,22 @@ int run(const char *path)
     return 0;
 }
 
-int set(const char *key, const char *value)
+int set(const char *key, const char *value, const size_t numParameter)
 {
-//    printf("debug: enter set\n");
+    if (numParameter > 2) {
+        return TOO_MANY_ARGUMENTS;
+    }
+
     int status = shell_memory_set(key, value);
     return status;
 }
 
-int print(const char *key)
+int print(const char *key, const size_t numParameter)
 {
+    if (numParameter > 1) {
+        return TOO_MANY_ARGUMENTS;
+    }
+
     const char *value = shell_memory_get(key);
     if (value == NULL)
     {
@@ -179,16 +198,17 @@ int interpret(char* raw_input, bool isFromScript) {
 //    printf("debug: enter interpret %s", raw_input);
     int errCode = 0;
 
-    size_t numToken = 0;
-    char** tokens = tokenize(raw_input, &numToken);
+    size_t numArgument = 0;
+    char** tokens = tokenize(raw_input, &numArgument);
 //    printf("debug: tokenized\n");
+    numArgument --;
 
-    if (strcmp(tokens[0], "help") == 0) { help(); }
-    else if (strcmp(tokens[0], "quit") == 0) { errCode = quit(isFromScript); }
-    else if (strcmp(tokens[0], "set") == 0) { errCode = set(tokens[1], tokens[2]); }
-    else if (strcmp(tokens[0], "print") == 0) { errCode = print(tokens[1]); }
-    else if (strcmp(tokens[0], "run") == 0) { errCode = run(tokens[1]); }
-    else if (strcmp(tokens[0], "exec") == 0) { errCode = exec((const char **) (tokens + 1), numToken - 1); }
+    if (strcmp(tokens[0], "help") == 0) { help(numArgument); }
+    else if (strcmp(tokens[0], "quit") == 0) { errCode = quit(isFromScript, numArgument); }
+    else if (strcmp(tokens[0], "set") == 0) { errCode = set(tokens[1], tokens[2], numArgument); }
+    else if (strcmp(tokens[0], "print") == 0) { errCode = print(tokens[1], numArgument); }
+    else if (strcmp(tokens[0], "run") == 0) { errCode = run(tokens[1], numArgument); }
+    else if (strcmp(tokens[0], "exec") == 0) { errCode = exec((const char **) (tokens + 1), numArgument); }
     else if (strcmp(tokens[0], "") == 0) { }
     else { errCode = SYNTAX_ERROR; }
 
