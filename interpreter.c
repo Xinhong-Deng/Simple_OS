@@ -149,6 +149,10 @@ int print(const char *key)
 
 int exec(const char **script, const size_t numscript) {
 
+    if (numscript > 3) {
+        return EXEC_TOO_MANY_SCRIPTS;
+    }
+
     for (int i = 0; i < numscript; i++) {
         for (int j = i + 1; j < numscript; j++) {
             if (strcmp(script[i], script[j]) == 0) {

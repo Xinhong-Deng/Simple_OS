@@ -24,21 +24,24 @@ int shellUI(int argc, const char *argv[])
             printf("%s", commandInput);
         }
 
+        // todo: need to add additional error message!!
         int errorCode = interpret(commandInput, false);
         free(commandInput);
 //        printf("debug: freed commandInput\n");
         if (errorCode == -1) {
             exit(EXIT_FAILURE);
         } else if (errorCode == PRINT_ERROR) {
-            printf("Variable does not exist\n");
+            printf("Error: Variable does not exist\n");
         } else if (errorCode == SCRIPT_NOT_FOUND) {
-            printf("Script not found\n");
+            printf("Error: Script not found\n");
         } else if (errorCode == SYNTAX_ERROR) {
-            printf("Unknown command\n");
+            printf("Error: Unknown command\n");
         } else if (errorCode == MEMORY_FULL) {
-            printf("Unable to set shell memory.\n");
+            printf("Error: Unable to set shell memory.\n");
         } else if (errorCode == EXEC_SCRIPT_LOADED) {
             printf("Error: Script already loaded \n");
+        } else if (errorCode == EXEC_TOO_MANY_SCRIPTS) {
+            printf("Error: Provide more than 3 scripts\n");
         } else if (errorCode == QUIT_FROM_SCRIPT) {
             //do nothing, wait for user input
         }
