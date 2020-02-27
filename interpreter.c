@@ -200,8 +200,11 @@ int interpret(char* raw_input, bool isFromScript) {
 
     size_t numArgument = 0;
     char** tokens = tokenize(raw_input, &numArgument);
-//    printf("debug: tokenized\n");
     numArgument --;
+
+    if (tokens[0] == NULL) {
+        return 0;
+    }
 
     if (strcmp(tokens[0], "help") == 0) { help(numArgument); }
     else if (strcmp(tokens[0], "quit") == 0) { errCode = quit(isFromScript, numArgument); }
@@ -209,7 +212,6 @@ int interpret(char* raw_input, bool isFromScript) {
     else if (strcmp(tokens[0], "print") == 0) { errCode = print(tokens[1], numArgument); }
     else if (strcmp(tokens[0], "run") == 0) { errCode = run(tokens[1], numArgument); }
     else if (strcmp(tokens[0], "exec") == 0) { errCode = exec((const char **) (tokens + 1), numArgument); }
-    else if (strcmp(tokens[0], "") == 0) { }
     else { errCode = SYNTAX_ERROR; }
 
     free(tokens);
