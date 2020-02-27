@@ -80,6 +80,7 @@ char **tokenize(char *str)
 }
 
 int in_file_flag = 0;
+int execut_script = 0;
 
 int help()
 {
@@ -98,7 +99,7 @@ int help()
 int quit()
 {
     printf("Bye!\n");
-    if (in_file_flag == 0)
+    if (in_file_flag == 0 && execut_script == 0)
     {
         shell_memory_destory();
         exit(0);
@@ -116,11 +117,14 @@ int run(const char *path)
     }
     int enter_flag_status = in_file_flag;
     in_file_flag = 1;
-    while (!feof(file))
+    while (1)
     {
         char *line = NULL;
         size_t linecap = 0;
         getline(&line, &linecap, file);
+        if (feof(file)) {
+            break;
+        }
 
         int status = interpret(line);
         free(line);
@@ -187,7 +191,10 @@ int exec(const char *script1, char *script2, char *script3) {
             return 1;
         }
     }
-    return scheduler();
+    execut_script = 1;
+    int error = scheduler();
+    execut_script = 0;
+    return error;
 }
 
 int interpret(char *raw_input)

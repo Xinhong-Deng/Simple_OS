@@ -88,17 +88,18 @@ int scheduler()
             return 1;
         }
 
-        head = head->next;
         currentPCB->PC += quanta;
         if (currentPCB->PC == currentPCB->end + 1)
         {
             // check whether the end of script
+            head = head->next;
             free(currentNode);
         } else
         {
             if (tail == head) {
                 continue;
             }
+            head = head->next;
             tail->next = currentNode;
             tail = currentNode;
         }
