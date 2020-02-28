@@ -3,28 +3,33 @@
 //
 
 #include "ram.h"
+#include "statusCode.h"
 
 
 int currentAvailablePos = 0;
 
-void addToRam(FILE* p, int* start, int* end) {
+int addToRam(FILE* p, int* start, int* end) {
     *start = currentAvailablePos;
     while (1) {
-        char buffer[100];
-        fgets(buffer, sizeof(buffer), p);
+        char *buffer = NULL;
+        size_t buffercap = 0;
+        getline(&buffer, &buffercap, p);
         if (feof(p)) {
             break;
         }
 
-        //todo: handle ram[] is full??
+        if (currentAvailablePos > 1000) {
+            return RAM_IS_FULL;
+        }
         ram[currentAvailablePos] = strdup(buffer);
         currentAvailablePos ++;
     }
 
     *end = currentAvailablePos - 1;
-
+    return 0;
 }
 
+// debug only
 void printRam() {
     for (int i = 0; i < currentAvailablePos; i++) {
         printf("debug: ram[%d]: %s", i, ram[i]);

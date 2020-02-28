@@ -11,6 +11,7 @@
 #define EXEC_SCRIPT_LOADED -6
 #define EXEC_TOO_MANY_SCRIPTS -7
 #define TOO_MANY_ARGUMENTS -8
+#define RAM_IS_FULL -9
 #define QUIT_FROM_SCRIPT 1
 
 #include <stdlib.h>

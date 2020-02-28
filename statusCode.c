@@ -17,6 +17,8 @@ void printErrorMessage(int errorCode) {
         printf("Error: Provide more than 3 scripts\n");
     } else if (errorCode == TOO_MANY_ARGUMENTS) {
         printf("Error: Malformed command\n");
+    } else if (errorCode == RAM_IS_FULL) {
+       printf("Error: RAM is full\n");
     } else if (errorCode == QUIT_FROM_SCRIPT) {
         //do nothing, wait for user input
     }

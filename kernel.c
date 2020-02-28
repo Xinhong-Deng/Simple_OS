@@ -46,9 +46,13 @@ int myinit(const char* fileName)
     {
         return SCRIPT_NOT_FOUND;
     }
+
     int start = 0;
     int end = 0;
-    addToRam(f1, &start, &end);
+    int errCode = addToRam(f1, &start, &end);
+    if (errCode < 0) {
+        return errCode;
+    }
     PCB* pcb = makePCB(start, end);
     addToReadyQueue(pcb);
 
