@@ -15,5 +15,5 @@ typedef struct CPU {
 
 CPU* cpu;
 bool isCpuBusy;
-int cpuRun(int quanta);
+int run(int quanta);
 #endif //ECSE427_CPU_H

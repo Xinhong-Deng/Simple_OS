@@ -89,7 +89,7 @@ int scheduler()
 
         int lineLeft = currentPCB->end - currentPCB->PC + 1;
         int quanta = min(lineLeft, 2);
-        if (cpuRun(quanta) != 0) {
+        if (run(quanta) != 0) {
             freeReadyQueue();
             resetRam();
             return 1;

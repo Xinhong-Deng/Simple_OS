@@ -111,7 +111,7 @@ int quit(bool isFromScript, const size_t numParameter) {
     }
 }
 
-int run(const char *path, const size_t numParameter)
+static int run(const char *path, const size_t numParameter)
 {
     if (numParameter > 1) {
         return TOO_MANY_ARGUMENTS;

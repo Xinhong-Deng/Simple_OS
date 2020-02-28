@@ -9,7 +9,7 @@
 #include "ram.h"
 #include "shell.h"
 
-int cpuRun(int quanta) {
+int run(int quanta) {
     isCpuBusy = true;
     for (int i = 0; i < quanta; i++) {
 
