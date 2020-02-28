@@ -12,7 +12,7 @@ void printErrorMessage(int errorCode) {
     } else if (errorCode == MEMORY_FULL) {
         printf("Error: Unable to set shell memory.\n");
     } else if (errorCode == EXEC_SCRIPT_LOADED) {
-        printf("Error: Script already loaded \n");
+        // already printed
     } else if (errorCode == EXEC_TOO_MANY_SCRIPTS) {
         printf("Error: Provide more than 3 scripts\n");
     } else if (errorCode == TOO_MANY_ARGUMENTS) {

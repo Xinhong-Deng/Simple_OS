@@ -175,6 +175,7 @@ int exec(const char **script, const size_t numscript) {
     for (int i = 0; i < numscript; i++) {
         for (int j = i + 1; j < numscript; j++) {
             if (strcmp(script[i], script[j]) == 0) {
+                printf("Error: Script %s already loaded \n", script[i]);
                 return EXEC_SCRIPT_LOADED;
             }
         }
