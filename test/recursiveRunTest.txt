@@ -2,7 +2,7 @@ help
 set x 10
 set y 20
 set z mary
-set bobbie Montreal Canadians
+set bobbie Montreal
 set z bob
 set y 30
 print x
