@@ -1,0 +1,3 @@
+run script1.txt
+run script2.txt
+quit
