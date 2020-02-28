@@ -191,9 +191,6 @@ int exec(const char **script, const size_t numscript) {
     return scheduler();
 }
 
-/*
- * todo: throw error if more var are received
- */
 int interpret(char* raw_input, bool isFromScript) {
 //    printf("debug: enter interpret %s", raw_input);
     int errCode = 0;
@@ -210,7 +207,13 @@ int interpret(char* raw_input, bool isFromScript) {
     else if (strcmp(tokens[0], "quit") == 0) { errCode = quit(isFromScript, numArgument); }
     else if (strcmp(tokens[0], "set") == 0) { errCode = set(tokens[1], tokens[2], numArgument); }
     else if (strcmp(tokens[0], "print") == 0) { errCode = print(tokens[1], numArgument); }
-    else if (strcmp(tokens[0], "run") == 0) { errCode = run(tokens[1], numArgument); }
+    else if (strcmp(tokens[0], "run") == 0) {
+        errCode = run(tokens[1], numArgument);
+        if (isFromScript) {
+            printErrorMessage(errCode);
+        }
+        errCode = 0;
+    }
     else if (strcmp(tokens[0], "exec") == 0) { errCode = exec((const char **) (tokens + 1), numArgument); }
     else { errCode = SYNTAX_ERROR; }
 

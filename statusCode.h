@@ -13,4 +13,8 @@
 #define TOO_MANY_ARGUMENTS -8
 #define QUIT_FROM_SCRIPT 1
 
+#include <stdlib.h>
+#include <stdio.h>
+void printErrorMessage(int errorCode);
+
 #endif //ASSIGNMENT2_STATUSCODE_H
