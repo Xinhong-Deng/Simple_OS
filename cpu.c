@@ -10,6 +10,7 @@
 #include "shell.h"
 
 int cpuRun(int quanta) {
+    isCpuBusy = true;
     for (int i = 0; i < quanta; i++) {
 
         strcpy(cpu->IR, ram[cpu->IP]);
@@ -19,8 +20,8 @@ int cpuRun(int quanta) {
             return errCode;
         }
         free(ram[cpu->IP]);
-//        printf("debug: freed ram[%d]\n", cpu->IP);
         cpu->IP ++;
     }
+    isCpuBusy = false;
     return 0;
 }

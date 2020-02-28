@@ -15,6 +15,7 @@ int main(int argc, char** argv)
 {
     cpu = (CPU*) malloc(sizeof(CPU));
     cpu->quanta = 2;
+    isCpuBusy = false;
     shellUI(argc, argv);
     return 0;
 }
@@ -75,9 +76,9 @@ void freeReadyQueue()
 
 int scheduler()
 {
-    // todo: check whether the cpu is busy
     while (head != NULL)
     {
+        while (isCpuBusy) { }
         Node* currentNode = head;
         PCB* currentPCB = currentNode->pcb;
         cpu->IP = currentPCB->PC;

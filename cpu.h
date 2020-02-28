@@ -6,6 +6,7 @@
 #define ECSE427_CPU_H
 
 #include <stdlib.h>
+#include <stdbool.h>
 typedef struct CPU {
     int IP;
     char IR[1000];
@@ -13,5 +14,6 @@ typedef struct CPU {
 } CPU;
 
 CPU* cpu;
+bool isCpuBusy;
 int cpuRun(int quanta);
 #endif //ECSE427_CPU_H
