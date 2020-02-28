@@ -18,7 +18,7 @@ int addToRam(FILE* p, int* start, int* end) {
             break;
         }
 
-        if (currentAvailablePos > 1000) {
+        if (currentAvailablePos >= 1000) {
             return RAM_IS_FULL;
         }
         ram[currentAvailablePos] = strdup(buffer);
