@@ -91,6 +91,7 @@ int scheduler()
         int quanta = min(lineLeft, 2);
         if (cpuRun(quanta) != 0) {
             freeReadyQueue();
+            resetRam();
             return 1;
         }
 
@@ -112,6 +113,7 @@ int scheduler()
         }
 
     }
+    resetRam();
     return 0;
 }
 

@@ -29,6 +29,9 @@ int addToRam(FILE* p, int* start, int* end) {
     return 0;
 }
 
+void resetRam() {
+    currentAvailablePos = 0;
+}
 // debug only
 void printRam() {
     for (int i = 0; i < currentAvailablePos; i++) {
