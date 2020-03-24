@@ -6,7 +6,7 @@
 #define ECSE427_RAM_H
 #include <string.h>
 #include <stdio.h>
-char* ram[1000];
+char* ram[40];
 int addToRam(FILE* p, int* start, int* end);
 void resetRam();
 void printRam();

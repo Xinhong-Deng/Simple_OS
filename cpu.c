@@ -11,6 +11,7 @@
 
 int run(int quanta) {
     isCpuBusy = true;
+    //todo: should include offset to fetch the instruction
     for (int i = 0; i < quanta; i++) {
 
         strcpy(cpu->IR, ram[cpu->IP]);

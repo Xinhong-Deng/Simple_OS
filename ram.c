@@ -32,9 +32,10 @@ int addToRam(FILE* p, int* start, int* end) {
 void resetRam() {
     currentAvailablePos = 0;
 }
+
 // debug only
 void printRam() {
-    for (int i = 0; i < currentAvailablePos; i++) {
+    for (int i = 0; i < 40; i++) {
         printf("debug: ram[%d]: %s", i, ram[i]);
     }
 }

@@ -2,7 +2,6 @@
 // Created by sandra on 2/16/20.
 //
 
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "kernel.h"
@@ -10,13 +9,25 @@
 #include "ram.h"
 #include "cpu.h"
 #include "statusCode.h"
+#include "memorymanager.h"
 
-int main(int argc, char** argv)
-{
+//todo: you may need to move the error handling to the main!!
+void kernel(int argc, char** argv) {
     cpu = (CPU*) malloc(sizeof(CPU));
     cpu->quanta = 2;
     isCpuBusy = false;
     shellUI(argc, argv);
+}
+
+void boot() {
+    system("[ -d BackingStore ]&&rm -r BackingStore");
+    system("mkdir BackingStore");
+}
+
+int main(int argc, char** argv)
+{
+    boot();
+    kernel(argc, argv);
     return 0;
 }
 
@@ -39,24 +50,20 @@ void addToReadyQueue(PCB* pcb)
 }
 
 
-int myinit(const char* fileName)
+PCB* myinit(const FILE* f1)
 {
-    FILE* f1 = fopen(fileName, "r");
-    if (f1 == NULL)
-    {
-        return SCRIPT_NOT_FOUND;
-    }
 
     int start = 0;
     int end = 0;
+    //todo: change add to ram!! should be loaded in the launcher()
     int errCode = addToRam(f1, &start, &end);
     if (errCode < 0) {
-        return errCode;
+//        return errCode;
     }
     PCB* pcb = makePCB(start, end);
     addToReadyQueue(pcb);
 
-    return 0;
+    return pcb;
 }
 
 int min(int a, int b)
@@ -87,6 +94,7 @@ int scheduler()
         PCB* currentPCB = currentNode->pcb;
         cpu->IP = currentPCB->PC;
 
+        //todo: cannot use this method to detect the line left!!
         int lineLeft = currentPCB->end - currentPCB->PC + 1;
         int quanta = min(lineLeft, 2);
         if (run(quanta) != 0) {
@@ -95,6 +103,7 @@ int scheduler()
             return 1;
         }
 
+        //todo: not update PC, but update the offset!!
         currentPCB->PC += quanta;
         if (currentPCB->PC == currentPCB->end + 1)
         {

@@ -6,6 +6,7 @@
 #define ECSE427_KERNEL_H
 
 #include "pcb.h"
+#include <stdio.h>
 typedef struct Node {
     PCB* pcb;
     struct Node* next;
@@ -15,7 +16,7 @@ void addToReadyQueue(PCB* pcb);
 Node* head;
 Node* tail;
 
-int myinit(const char* fileName);
+PCB* myinit(const FILE* fileName);
 int scheduler();
 
 #endif //ECSE427_KERNEL_H

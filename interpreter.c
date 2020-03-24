@@ -2,6 +2,7 @@
 #include "shellmemory.h"
 #include "kernel.h"
 #include "statusCode.h"
+#include "memorymanager.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -182,6 +183,13 @@ int exec(const char **script, const size_t numscript) {
     }
 
     for (int i = 0; i < numscript; i++) {
+        FILE* f1 = fopen(script[i], "r");
+        if (f1 == NULL)
+        {
+            return SCRIPT_NOT_FOUND;
+        }
+        //todo: call launcher instead
+        launcher(f1);
         int errCode = myinit(script[i]);
         if (errCode != 0)
         {

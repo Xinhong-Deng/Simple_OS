@@ -27,8 +27,8 @@ int shellUI(int argc, const char *argv[])
         // todo: need to add additional error message!!
         int errorCode = interpret(commandInput, false);
         free(commandInput);
-//        printf("debug: freed commandInput\n");
         if (errorCode == -1) {
+            shell_memory_destory();
             exit(EXIT_FAILURE);
         } else{
             printErrorMessage(errorCode);
@@ -36,7 +36,4 @@ int shellUI(int argc, const char *argv[])
 
     }
 
-    shell_memory_destory();
-
-    return 0;
 }
