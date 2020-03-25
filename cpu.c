@@ -7,21 +7,31 @@
 #include <stdbool.h>
 #include "interpreter.h"
 #include "ram.h"
-#include "shell.h"
 
 int run(int quanta) {
     isCpuBusy = true;
     //todo: should include offset to fetch the instruction
     for (int i = 0; i < quanta; i++) {
+        // todo: cannot handle incomplete last page
+        if (cpu->offset == 4) {
+            isCpuBusy = false;
+            return PAGE_FAULT;
+        }
 
-        strcpy(cpu->IR, ram[cpu->IP]);
+        if (ram[cpu->IP * 4 + cpu->offset] == NULL) {
+            isCpuBusy = false;
+            return END_OF_PROCESS;
+        }
+
+        strcpy(cpu->IR, ram[cpu->IP * 4 + cpu->offset]);
         int errCode = interpret(cpu->IR, true);
         if (errCode < 0) {
             // 0: no error; 1: quit from file
+            isCpuBusy = false;
             return errCode;
         }
-        free(ram[cpu->IP]);
-        cpu->IP ++;
+
+        cpu->offset ++;
     }
     isCpuBusy = false;
     return 0;

@@ -3,11 +3,11 @@
 //
 
 #include "memorymanager.h"
-#include <unistd.h>
 #include "statusCode.h"
 #include "kernel.h"
-#include <string.h>
 #include "ram.h"
+
+#include <string.h>
 
 int launcher(FILE* f) {
     int totalPages = countTotalPages(f);
@@ -15,9 +15,9 @@ int launcher(FILE* f) {
         return 0;
     }
 
-    //create pcb here
     //todo: check error: add the pcb to the ready queue before load anything to the ram
     PCB* pcb = myinit(f);
+    pcb->page_max = totalPages;
 
     char bsFileName[50];
     sprintf(bsFileName, "BackingStore/%d.txt", pcb->pid);
@@ -51,6 +51,9 @@ int launcher(FILE* f) {
         updatePageTable(pcb, i, frameNumber, victimFrame);
     }
 
+    pcb->PC = pcb->pageTable[0];
+    fclose(bsFile);
+
     return 1;
 }
 
@@ -73,11 +76,20 @@ void loadPage(int pageNumber, FILE* f, int frameNumber) {
     char* instructions[40];
     char line[100];
     int i = 0;
+    rewind(f);
     while(fgets(line, 100, f) != NULL) {
+        printf("%s", line);
         instructions[i] = strdup(line);
+        i ++;
     }
 
-    for (int x =0; x < 4; x++) {
+
+    for (int x = 0; x < 4; x++) {
+        if (x + 1 > i) {
+            // the script has less than 4 lines in this case
+            ram[frameNumber * 4 + x] = NULL;
+            continue;
+        }
         ram[frameNumber * 4 + x] = strdup(instructions[pageNumber * 4 + x]);
     }
 
@@ -111,6 +123,7 @@ PCB* locateVictim(int victimFrame) {
     Node* currentNode = head;
     while (currentNode != tail) {
         if (isInPageTable(currentNode->pcb, victimFrame)) {
+            printf("victim page[%d] found, belongs to [%d]\n", victimFrame, currentNode->pcb->pid);
             return currentNode->pcb;
         }
         currentNode = currentNode->next;
@@ -144,6 +157,27 @@ int updatePageTable(PCB *p, int pageNumber, int frameNumber, int victimFrame) {
         }
     }
 
+    printf("after page table update\n");
+    printPageTable(p);
+    printPageTable(victimPcb);
+
     return 0;
 }
 
+void removeFrame(int frameNumber) {
+    for (int i = 0; i < 4; i++) {
+        free(ram[frameNumber * 4 + i]);
+    }
+}
+
+void removePageTable(PCB* pcb) {
+    // called when process terminate, remove its pagetable
+    for (int i = 0; i < 10; i ++) {
+        int frame = pcb->pageTable[i];
+        if (frame == -1) {
+            continue;
+        }
+
+        removeFrame(frame);
+    }
+}

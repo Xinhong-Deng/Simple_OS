@@ -106,6 +106,7 @@ int quit(bool isFromScript, const size_t numParameter) {
 
     if (!isFromScript) {
         shell_memory_destory();
+        system("rm -r BackingStore");
         exit(EXIT_SUCCESS);
     } else {
         return QUIT_FROM_SCRIPT;
@@ -188,12 +189,10 @@ int exec(const char **script, const size_t numscript) {
         {
             return SCRIPT_NOT_FOUND;
         }
-        //todo: call launcher instead
-        launcher(f1);
-        int errCode = myinit(script[i]);
-        if (errCode != 0)
-        {
-            return errCode;
+        int errorCode = launcher(f1);
+        fclose(f1);
+        if (errorCode == 0) {
+            return LAUNCH_TOO_MANY_PAGES;
         }
     }
 
@@ -230,113 +229,3 @@ int interpret(char* raw_input, bool isFromScript) {
 
     return errCode;
 }
-
-
-
-//int interpret(char *raw_input)
-//{
-//    char **tokens = tokenize(raw_input);
-//
-//    if (tokens[0] == NULL)
-//        return 0; // empty command
-//
-//    if (strcmp(tokens[0], "help") == 0)
-//    {
-//        if (tokens[1] != NULL)
-//        {
-//            printf("help: Malformed command\n");
-//            free(tokens);
-//            return 1;
-//        }
-//        free(tokens);
-//        return help();
-//    }
-//
-//    if (strcmp(tokens[0], "quit") == 0)
-//    {
-//        if (tokens[1] != NULL)
-//        {
-//            printf("quit: Malformed command\n");
-//            free(tokens);
-//            return 1;
-//        }
-//        if (in_file_flag) {
-//            free(raw_input);
-//        }
-//        free(tokens);
-//        return quit();
-//    };
-//
-//    if (strcmp(tokens[0], "set") == 0)
-//    {
-//        if (!(tokens[1] != NULL && tokens[2] != NULL && tokens[3] == NULL))
-//        {
-//            printf("set: Malformed command\n");
-//            free(tokens);
-//            return 1;
-//        }
-//        int status = set(tokens[1], tokens[2]);
-//        free(tokens);
-//        return status;
-//    }
-//
-//    if (strcmp(tokens[0], "print") == 0)
-//    {
-//        if (!(tokens[1] != NULL && tokens[2] == NULL))
-//        {
-//            printf("print: Malformed command\n");
-//            free(tokens);
-//            return 1;
-//        }
-//        int status = print(tokens[1]);
-//        free(tokens);
-//        return status;
-//    }
-//
-//    if (strcmp(tokens[0], "run") == 0)
-//    {
-//        if (!(tokens[1] != NULL && tokens[2] == NULL))
-//        {
-//            printf("run: Malformed command\n");
-//            free(tokens);
-//            return 1;
-//        }
-//        int result = run(tokens[1]);
-//        free(tokens);
-//        return result;
-//    }
-//
-//    if (strcmp(tokens[0], "exec") == 0)
-//    {
-//        char* scripts[3] = {NULL, NULL, NULL};
-//        for (int i = 0; i < 3; i++)
-//        {
-//            if (tokens[1 + i] == NULL)
-//            {
-//                break;
-//            }
-//            scripts[i] = tokens[1 + i];
-//        }
-//
-//        if (scripts[0] == NULL)
-//        {
-//            printf("exec: Malformed command\n");
-//            free(tokens);
-//            return 1;
-//        }
-//        if (tokens[4] != NULL && scripts[2] != NULL)
-//        {
-//            printf("exec: Provide more than 3 scripts\n");
-//            free(tokens);
-//            return 1;
-//        }
-//
-//        int result = exec(scripts[0], scripts[1], scripts[2]);
-//        free(tokens);
-//        return result;
-//    }
-//
-//    printf("Unrecognized command \"%s\"\n", tokens[0]);
-//    free(tokens);
-//    return 1;
-//}

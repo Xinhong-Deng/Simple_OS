@@ -18,4 +18,6 @@ int findFrame();
 int findVictim(PCB* p);
 
 int updatePageTable(PCB *p, int pageNumber, int frameNumber, int victimFrame);
+
+void removePageTable(PCB* p);
 #endif //ASSIGNMENT2_MEMORYMANAGER_H
