@@ -7,9 +7,8 @@
 
 void resetRam() {
     for (int i = 0; i < 40; i++) {
-        if (ram[i] != NULL) {
-            free(ram[i]);
-        }
+        free(ram[i]);
+        ram[i] = NULL;
     }
 }
 

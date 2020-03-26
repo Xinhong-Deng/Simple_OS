@@ -4,7 +4,6 @@
 
 #include "pcb.h"
 #include <stdlib.h>
-#include <time.h>
 
 #include <stdio.h>
 
@@ -12,6 +11,10 @@ PCB* makePCB() {
     PCB* pcb = (PCB*) malloc(sizeof(PCB));
 
     pcb->pid = rand();
+    pcb->PC = 0;
+    pcb->PC_page = 0;
+    pcb->PC_offset = 0;
+    pcb->PC_page = 0;
 
     for (int i = 0; i < 10; i ++) {
         pcb->pageTable[i] = -1;

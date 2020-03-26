@@ -175,22 +175,12 @@ int exec(const char **script, const size_t numscript) {
     }
 
     for (int i = 0; i < numscript; i++) {
-        for (int j = i + 1; j < numscript; j++) {
-            if (strcmp(script[i], script[j]) == 0) {
-                printf("Error: Script %s already loaded \n", script[i]);
-                return EXEC_SCRIPT_LOADED;
-            }
-        }
-    }
-
-    for (int i = 0; i < numscript; i++) {
         FILE* f1 = fopen(script[i], "r");
         if (f1 == NULL)
         {
             return SCRIPT_NOT_FOUND;
         }
         int errorCode = launcher(f1);
-        fclose(f1);
         if (errorCode == 0) {
             return LAUNCH_TOO_MANY_PAGES;
         }

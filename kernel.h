@@ -16,7 +16,7 @@ void addToReadyQueue(PCB* pcb);
 Node* head;
 Node* tail;
 
-PCB* myinit(const FILE* fileName);
+PCB* myinit();
 int scheduler();
 
 #endif //ECSE427_KERNEL_H

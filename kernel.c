@@ -22,6 +22,10 @@ void kernel(int argc, char** argv) {
 void boot() {
     system("[ -d BackingStore ]&&rm -r BackingStore");
     system("mkdir BackingStore");
+
+    for (int i = 0; i< 40; i ++) {
+        ram[i] = NULL;
+    }
 }
 
 int main(int argc, char** argv)
@@ -50,24 +54,13 @@ void addToReadyQueue(PCB* pcb)
 }
 
 
-PCB* myinit(const FILE* f1)
+PCB* myinit()
 {
-
-    //todo: change add to ram!! should be loaded in the launcher()
     PCB* pcb = makePCB();
     addToReadyQueue(pcb);
 
     return pcb;
 }
-
-int min(int a, int b)
-{
-    if (a > b) {
-        return b;
-    }
-    return a;
-}
-
 
 void freeReadyQueue()
 {
@@ -99,10 +92,9 @@ int scheduler()
         cpu->IP = currentPCB->PC;
         cpu->offset = currentPCB->PC_offset;
 
-        // todo: should test how many line left!!
         int statusCode = run(cpu->quanta);
 
-        if (statusCode < 0 || statusCode == 1) {
+        if (statusCode < 0) {
             // error or the script quit
             freeReadyQueue();
             resetRam();
@@ -118,10 +110,11 @@ int scheduler()
         }
 
         currentPCB->PC_page ++;
-        if (currentPCB->PC_page > currentPCB->page_max || statusCode == END_OF_PROCESS) {
+        if (currentPCB->PC_page >= currentPCB->page_max || statusCode == QUIT_FROM_SCRIPT) {
             // remove this pcb from the queue, and all its page in the frame
             removePageTable(currentPCB);
             head = head->next;
+            free(currentPCB);
             free(currentNode);
             continue;
         }
@@ -157,6 +150,7 @@ int scheduler()
 
         printf("process[%d] has page fault, and the new page[%d] is loaded at [%d], with victim[%d]\n", currentPCB->pid, currentPCB->PC_page, currentPCB->PC, victimFrame);
         queuePutFirstToLast(currentNode);
+        fclose(bsFile);
 
     }
     resetRam();

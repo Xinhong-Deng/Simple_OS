@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include "interpreter.h"
 #include "ram.h"
+#include "statusCode.h"
 
 int run(int quanta) {
     isCpuBusy = true;
@@ -18,14 +19,9 @@ int run(int quanta) {
             return PAGE_FAULT;
         }
 
-        if (ram[cpu->IP * 4 + cpu->offset] == NULL) {
-            isCpuBusy = false;
-            return END_OF_PROCESS;
-        }
-
         strcpy(cpu->IR, ram[cpu->IP * 4 + cpu->offset]);
         int errCode = interpret(cpu->IR, true);
-        if (errCode < 0) {
+        if (errCode < 0 || errCode == QUIT_FROM_SCRIPT) {
             // 0: no error; 1: quit from file
             isCpuBusy = false;
             return errCode;

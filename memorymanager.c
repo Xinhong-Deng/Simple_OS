@@ -16,7 +16,7 @@ int launcher(FILE* f) {
     }
 
     //todo: check error: add the pcb to the ready queue before load anything to the ram
-    PCB* pcb = myinit(f);
+    PCB* pcb = myinit();
     pcb->page_max = totalPages;
 
     char bsFileName[50];
@@ -52,6 +52,7 @@ int launcher(FILE* f) {
     }
 
     pcb->PC = pcb->pageTable[0];
+    printPageTable(pcb);
     fclose(bsFile);
 
     return 1;
@@ -61,9 +62,16 @@ int countTotalPages(FILE* f) {
     char temp[100];
     int count = 0;
     //todo: may have loaded an empty line!!
+//    while (!feof(f)) {
+//        char* temp = NULL;
+//        size_t line_cap = 0;
+//        getline(&temp, &line_cap, f);
+//        count ++;
+//    }
     while (fgets(temp, 100, f) != NULL) {
         count ++;
     }
+    printf("count%d\n", count);
 
     if (count % 4 != 0) {
         return count / 4 + 1;
@@ -72,25 +80,29 @@ int countTotalPages(FILE* f) {
 }
 
 void loadPage(int pageNumber, FILE* f, int frameNumber) {
-    printf("load page %d into frame %d", pageNumber, frameNumber);
+    printf("load page %d into frame %d\n", pageNumber, frameNumber);
     char* instructions[40];
     char line[100];
-    int i = 0;
+    int numInstruction = 0;
     rewind(f);
     while(fgets(line, 100, f) != NULL) {
         printf("%s", line);
-        instructions[i] = strdup(line);
-        i ++;
+        instructions[numInstruction] = strdup(line);
+        numInstruction ++;
     }
 
-
     for (int x = 0; x < 4; x++) {
-        if (x + 1 > i) {
+        if (x + 1 + pageNumber * 4 > numInstruction) {
             // the script has less than 4 lines in this case
             ram[frameNumber * 4 + x] = NULL;
             continue;
         }
+        printf("instruction[%d]: %s", pageNumber * 4 + x, instructions[pageNumber * 4 + x]);
         ram[frameNumber * 4 + x] = strdup(instructions[pageNumber * 4 + x]);
+    }
+
+    for (int j = 0; j < numInstruction; j ++) {
+        free(instructions[j]);
     }
 
     printRam();
@@ -167,6 +179,7 @@ int updatePageTable(PCB *p, int pageNumber, int frameNumber, int victimFrame) {
 void removeFrame(int frameNumber) {
     for (int i = 0; i < 4; i++) {
         free(ram[frameNumber * 4 + i]);
+        ram[frameNumber * 4 + i] = NULL;
     }
 }
 
