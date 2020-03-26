@@ -18,3 +18,8 @@ Contain a Makefile
 Based on previous work, simulate the kernel.
 
 File Created: kernel.c, cpu.c, pcb.c, ram.c
+
+## A3 (2020.3)
+
+when you free(), the memory location is not accessible, but it is not set to NULL!!!
+if you want to know whether it is free() or not somewhere else, set it to NULL after you free() it!!
