@@ -116,8 +116,8 @@ int scheduler()
         currentPCB->PC = currentPCB->pageTable[currentPCB->PC_page];
 
         if (currentPCB->PC == -1) {
-            printf("process[%d]'s page[%d] is taken, throw page fault and wait for the next cycle\n", currentPCB->pid, currentPCB->PC_page);
-            printPageTable(currentPCB);
+//            printf("process[%d]'s page[%d] is taken, throw page fault and wait for the next cycle\n", currentPCB->pid, currentPCB->PC_page);
+//            printPageTable(currentPCB);
             handlePageFault(currentPCB);
             queuePutFirstToLast(currentNode);
             continue;
