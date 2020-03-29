@@ -119,7 +119,7 @@ int findVictim(PCB* p) {
     for (int i = victimFrame; i % 10 < 10; i ++) {
         // must be able to terminate, since all scripts have max 10 pages!
         if (!isInPageTable(p, i)) {
-            return i;
+            return i % 10;
         }
     }
 }
