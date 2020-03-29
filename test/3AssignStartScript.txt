@@ -1,0 +1,3 @@
+exec script2.txt script1.txt script3.txt
+exec script1.txt script1.txt script1.txt
+quit

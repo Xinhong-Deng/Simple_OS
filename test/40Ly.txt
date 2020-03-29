@@ -1,0 +1,40 @@
+set y 100
+print y
+set y 101
+print y
+set y 102
+print y
+set y 103
+print y
+set y 104
+print y
+set y 105
+print y
+set y 106
+print y
+set y 107
+print y
+set y 108
+print y
+set y 109
+print y
+set y 110
+print y
+set y 111
+print y
+set y 112
+print y
+set y 113
+print y
+set y 114
+print y
+set y 115
+print y
+set y 116
+print y
+set y 117
+print y
+set y 118
+print y
+help
+quit
