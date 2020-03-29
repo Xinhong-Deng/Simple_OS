@@ -1,0 +1,2 @@
+exec g1.txt g2.txt g1.txt
+quit
