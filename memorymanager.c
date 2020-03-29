@@ -52,7 +52,7 @@ int launcher(FILE* f) {
     }
 
     pcb->PC = pcb->pageTable[0];
-    printPageTable(pcb);
+//    printPageTable(pcb);
     fclose(bsFile);
 
     return 1;
@@ -61,17 +61,9 @@ int launcher(FILE* f) {
 int countTotalPages(FILE* f) {
     char temp[100];
     int count = 0;
-    //todo: may have loaded an empty line!!
-//    while (!feof(f)) {
-//        char* temp = NULL;
-//        size_t line_cap = 0;
-//        getline(&temp, &line_cap, f);
-//        count ++;
-//    }
     while (fgets(temp, 100, f) != NULL) {
         count ++;
     }
-    printf("count%d\n", count);
 
     if (count % 4 != 0) {
         return count / 4 + 1;
@@ -80,16 +72,17 @@ int countTotalPages(FILE* f) {
 }
 
 void loadPage(int pageNumber, FILE* f, int frameNumber) {
-    printf("load page %d into frame %d\n", pageNumber, frameNumber);
+//    printf("load page %d into frame %d\n", pageNumber, frameNumber);
     char* instructions[40];
     char line[100];
     int numInstruction = 0;
     rewind(f);
     while(fgets(line, 100, f) != NULL) {
-        printf("%s", line);
+//        printf("%s", line);
         instructions[numInstruction] = strdup(line);
         numInstruction ++;
     }
+//    printf("numInstruction:%d\n", numInstruction);
 
     for (int x = 0; x < 4; x++) {
         if (x + 1 + pageNumber * 4 > numInstruction) {
@@ -97,7 +90,7 @@ void loadPage(int pageNumber, FILE* f, int frameNumber) {
             ram[frameNumber * 4 + x] = NULL;
             continue;
         }
-        printf("instruction[%d]: %s", pageNumber * 4 + x, instructions[pageNumber * 4 + x]);
+//        printf("instruction[%d]: %s", pageNumber * 4 + x, instructions[pageNumber * 4 + x]);
         ram[frameNumber * 4 + x] = strdup(instructions[pageNumber * 4 + x]);
     }
 
@@ -105,7 +98,7 @@ void loadPage(int pageNumber, FILE* f, int frameNumber) {
         free(instructions[j]);
     }
 
-    printRam();
+//    printRam();
 }
 
 int findFrame() {
@@ -133,9 +126,9 @@ int findVictim(PCB* p) {
 
 PCB* locateVictim(int victimFrame) {
     Node* currentNode = head;
-    while (currentNode != tail) {
+    while (currentNode != NULL) {
         if (isInPageTable(currentNode->pcb, victimFrame)) {
-            printf("victim page[%d] found, belongs to [%d]\n", victimFrame, currentNode->pcb->pid);
+//            printf("victim frame[%d] found, belongs to [%d]\n", victimFrame, currentNode->pcb->pid);
             return currentNode->pcb;
         }
         currentNode = currentNode->next;
@@ -148,16 +141,16 @@ PCB* locateVictim(int victimFrame) {
 int updatePageTable(PCB *p, int pageNumber, int frameNumber, int victimFrame) {
     // if no victim, then the victim frame == -1, frameNumber > -1
     // if has victim, then the victimFrame > -1, frameNumber == -1
-
+//    printf("updating process[%d], with frameNum:%d and victim:%d\n", p->pid, frameNumber, victimFrame);
     if (victimFrame == -1) {
         p->pageTable[pageNumber] = frameNumber;
         return 0;
     }
 
     //have victim, update the both the victimPcb and the p
+    PCB* victimPcb = locateVictim(victimFrame);
     p->pageTable[pageNumber] = victimFrame;
 
-    PCB* victimPcb = locateVictim(victimFrame);
     if (victimPcb == NULL) {
         // todo: debug only!!
         printf("error!!! victim pcb does not exist\n");
@@ -169,9 +162,9 @@ int updatePageTable(PCB *p, int pageNumber, int frameNumber, int victimFrame) {
         }
     }
 
-    printf("after page table update\n");
-    printPageTable(p);
-    printPageTable(victimPcb);
+//    printf("after page table update\n");
+//    printPageTable(p);
+//    printPageTable(victimPcb);
 
     return 0;
 }

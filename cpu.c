@@ -13,12 +13,6 @@ int run(int quanta) {
     isCpuBusy = true;
     //todo: should include offset to fetch the instruction
     for (int i = 0; i < quanta; i++) {
-        // todo: cannot handle incomplete last page
-        if (cpu->offset == 4) {
-            isCpuBusy = false;
-            return PAGE_FAULT;
-        }
-
         strcpy(cpu->IR, ram[cpu->IP * 4 + cpu->offset]);
         int errCode = interpret(cpu->IR, true);
         if (errCode < 0 || errCode == QUIT_FROM_SCRIPT) {
@@ -28,6 +22,10 @@ int run(int quanta) {
         }
 
         cpu->offset ++;
+        if (cpu->offset == 4) {
+            isCpuBusy = false;
+            return PAGE_FAULT;
+        }
     }
     isCpuBusy = false;
     return 0;

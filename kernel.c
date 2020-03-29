@@ -82,6 +82,30 @@ void queuePutFirstToLast(Node* currentNode) {
     tail = currentNode;
 }
 
+void handlePageFault(PCB* currentPCB) {
+    char bsFileName[50];
+    sprintf(bsFileName, "BackingStore/%d.txt", currentPCB->pid);
+    FILE* bsFile = fopen(bsFileName, "r");
+    int victimFrame = -1;
+    int frameNumber = findFrame();
+//        printf("process[%d], frameNum:%d\n", currentPCB->pid, frameNumber);
+    if (frameNumber != -1) {
+        loadPage(currentPCB->PC_page, bsFile, frameNumber);
+    } else {
+        victimFrame = findVictim(currentPCB);
+        loadPage(currentPCB->PC_page, bsFile, victimFrame);
+    }
+
+    updatePageTable(currentPCB, currentPCB->PC_page, frameNumber, victimFrame);
+    currentPCB->PC = currentPCB->pageTable[currentPCB->PC_page];
+
+//        printf("process[%d] has page fault, and the new page[%d] is loaded at [%d], with victim[%d]\n", currentPCB->pid, currentPCB->PC_page, currentPCB->PC, victimFrame);
+//        printRam();
+//        printPageTable(currentPCB);
+    fclose(bsFile);
+}
+
+
 int scheduler()
 {
     while (head != NULL)
@@ -89,6 +113,16 @@ int scheduler()
         while (isCpuBusy) { }
         Node* currentNode = head;
         PCB* currentPCB = currentNode->pcb;
+        currentPCB->PC = currentPCB->pageTable[currentPCB->PC_page];
+
+        if (currentPCB->PC == -1) {
+            printf("process[%d]'s page[%d] is taken, throw page fault and wait for the next cycle\n", currentPCB->pid, currentPCB->PC_page);
+            printPageTable(currentPCB);
+            handlePageFault(currentPCB);
+            queuePutFirstToLast(currentNode);
+            continue;
+        }
+
         cpu->IP = currentPCB->PC;
         cpu->offset = currentPCB->PC_offset;
 
@@ -105,17 +139,19 @@ int scheduler()
             // no page fault
             currentPCB->PC_offset = cpu->offset;
             queuePutFirstToLast(currentNode);
-            printf("process[%d] not page fault at page[%d] line[%d] with frame[%d]\n", currentPCB->pid, currentPCB->PC_page, currentPCB->PC_offset, currentPCB->PC);
+//            printf("process[%d] not page fault at page[%d] line[%d] with frame[%d]\n", currentPCB->pid, currentPCB->PC_page, currentPCB->PC_offset, currentPCB->PC);
             continue;
         }
 
         currentPCB->PC_page ++;
         if (currentPCB->PC_page >= currentPCB->page_max || statusCode == QUIT_FROM_SCRIPT) {
             // remove this pcb from the queue, and all its page in the frame
+//            printf("process[%d] finish execution\n", currentPCB->pid);
             removePageTable(currentPCB);
             head = head->next;
             free(currentPCB);
             free(currentNode);
+//            printRam();
             continue;
         }
 
@@ -124,33 +160,17 @@ int scheduler()
         currentPCB->PC = currentPCB->pageTable[currentPCB->PC_page];
         if (currentPCB->PC != -1) {
             // page fault but page is already loaded in the ram
-            printf("process[%d] has page[%d] fault but the new page[%d] is loaded at frame[%d]\n",
-                    currentPCB->pid,
-                    currentPCB->PC_page-1,
-                    currentPCB->PC_page,
-                    currentPCB->PC);
+//            printf("process[%d] has page[%d] fault but the new page[%d] is loaded at frame[%d]\n",
+//                    currentPCB->pid,
+//                    currentPCB->PC_page-1,
+//                    currentPCB->PC_page,
+//                    currentPCB->PC);
             queuePutFirstToLast(currentNode);
             continue;
         }
 
-        char bsFileName[50];
-        sprintf(bsFileName, "BackingStore/%d.txt", currentPCB->pid);
-        FILE* bsFile = fopen(bsFileName, "w");
-        int victimFrame = -1;
-        int frameNumber = findFrame();
-        if (frameNumber != -1) {
-            loadPage(currentPCB->PC_page, bsFile, frameNumber);
-        } else {
-            victimFrame = findVictim(currentPCB);
-            loadPage(currentPCB->PC_page, bsFile, victimFrame);
-        }
-
-        updatePageTable(currentPCB, currentPCB->PC_page, frameNumber, victimFrame);
-        currentPCB->PC = currentPCB->pageTable[currentPCB->PC_page];
-
-        printf("process[%d] has page fault, and the new page[%d] is loaded at [%d], with victim[%d]\n", currentPCB->pid, currentPCB->PC_page, currentPCB->PC, victimFrame);
+        handlePageFault(currentPCB);
         queuePutFirstToLast(currentNode);
-        fclose(bsFile);
 
     }
     resetRam();
