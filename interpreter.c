@@ -106,7 +106,7 @@ int quit(bool isFromScript, const size_t numParameter) {
 
     if (!isFromScript) {
         shell_memory_destory();
-        system("rm -r BackingStore");
+        system("rm BackingStore/*");
         exit(EXIT_SUCCESS);
     } else {
         return QUIT_FROM_SCRIPT;
