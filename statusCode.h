@@ -12,7 +12,7 @@
 #define EXEC_TOO_MANY_SCRIPTS -7
 #define TOO_MANY_ARGUMENTS -8
 #define RAM_IS_FULL -9
-#define LAUNCH_TOO_MANY_PAGES -10
+#define LAUNCH_FAILED -10
 #define QUIT_FROM_SCRIPT 1
 
 #include <stdlib.h>

@@ -182,7 +182,7 @@ int exec(const char **script, const size_t numscript) {
         }
         int errorCode = launcher(f1);
         if (errorCode == 0) {
-            return LAUNCH_TOO_MANY_PAGES;
+            return LAUNCH_FAILED;
         }
     }
 

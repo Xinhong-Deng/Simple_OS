@@ -19,7 +19,9 @@ void printErrorMessage(int errorCode) {
         printf("Error: Malformed command\n");
     } else if (errorCode == RAM_IS_FULL) {
        printf("Error: RAM is full\n");
-    } else if (errorCode == QUIT_FROM_SCRIPT) {
+    } else if (errorCode == LAUNCH_FAILED) {
+       printf("Error: Failed to launch the script\n");
+    }else if (errorCode == QUIT_FROM_SCRIPT) {
         //do nothing, wait for user input
     }
 }
