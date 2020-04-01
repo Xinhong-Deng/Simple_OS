@@ -73,29 +73,21 @@ int countTotalPages(FILE* f) {
 
 void loadPage(int pageNumber, FILE* f, int frameNumber) {
 //    printf("load page %d into frame %d\n", pageNumber, frameNumber);
-    char* instructions[40];
     char line[100];
-    int numInstruction = 0;
     rewind(f);
-    while(fgets(line, 100, f) != NULL) {
-//        printf("%s", line);
-        instructions[numInstruction] = strdup(line);
-        numInstruction ++;
+    int currentLine = 0;
+    while (currentLine < pageNumber * 4) {
+        fgets(line, 100, f);
+        currentLine ++;
     }
-//    printf("numInstruction:%d\n", numInstruction);
 
     for (int x = 0; x < 4; x++) {
-        if (x + 1 + pageNumber * 4 > numInstruction) {
-            // the script has less than 4 lines in this case
+        if (fgets(line, 100, f) == NULL) {
             ram[frameNumber * 4 + x] = NULL;
             continue;
         }
 //        printf("instruction[%d]: %s", pageNumber * 4 + x, instructions[pageNumber * 4 + x]);
-        ram[frameNumber * 4 + x] = strdup(instructions[pageNumber * 4 + x]);
-    }
-
-    for (int j = 0; j < numInstruction; j ++) {
-        free(instructions[j]);
+        ram[frameNumber * 4 + x] = strdup(line);
     }
 
 //    printRam();
