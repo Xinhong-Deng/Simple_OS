@@ -1,5 +1,5 @@
 CFLAG=-I.
-OBJ=build/shellmemory.o build/interpreter.o build/pcb.o build/ram.o build/cpu.o build/statusCode.o build/shell.o build/kernel.o build/memorymanager.o
+OBJ=build/shellmemory.o build/interpreter.o build/pcb.o build/ram.o build/cpu.o build/statusCode.o build/shell.o build/kernel.o build/memorymanager.o build/main.o
 
 mykrenel: $(OBJ)
 	gcc -o mykernel $(OBJ)

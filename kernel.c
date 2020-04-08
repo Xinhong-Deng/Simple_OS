@@ -28,13 +28,6 @@ void boot() {
     }
 }
 
-int main(int argc, char** argv)
-{
-    boot();
-    kernel(argc, argv);
-    return 0;
-}
-
 void addToReadyQueue(PCB* pcb)
 {
     Node* newNode = (Node*) malloc(sizeof(Node));

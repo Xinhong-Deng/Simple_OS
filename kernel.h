@@ -18,5 +18,7 @@ Node* tail;
 
 PCB* myinit();
 int scheduler();
+void boot();
+void kernel(int argc, char** argv);
 
 #endif //ECSE427_KERNEL_H
