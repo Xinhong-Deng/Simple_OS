@@ -15,10 +15,17 @@ int shellUI(int argc, const char *argv[])
     shell_memory_initialize();
 
     while (1) {
+
         char* commandInput = (char*) malloc(sizeof(char) * 1000);
 
         printf ("$ ");
-        fgets(commandInput, 999, stdin);
+        FILE* tty = stdin;
+        fgets(commandInput, 999, tty);
+        if (feof(tty)) {
+            tty = fopen("/dev/tty", "r");
+            fgets(commandInput, 999, tty);
+        }
+
         if (!isatty(STDIN_FILENO)) {
             // input from tile redirection
             printf("%s", commandInput);
